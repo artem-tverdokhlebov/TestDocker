@@ -1,7 +1,6 @@
-# PROXY_MODE=bridge docker compose up --build
-# PROXY_MODE=container:proxy docker compose up --build
+# PROXY_MODE=container:proxy MACOS_PORTS="" docker compose -p macos_project up --build
 
-# PROXY_MODE=bridge docker compose -p macos_project up --build
+# PROXY_MODE=bridge PROXY_PORTS="" docker compose -p macos_project up --build
 
 version: "3.8"
 
@@ -11,8 +10,7 @@ services:
     container_name: proxy
     privileged: true
     ports:
-      - "50922:10022"
-      - "5999:5999"
+      ${PROXY_PORTS:-"50922:10022,5999:5999"}
     environment:
       PROXY_IP: "142.252.4.175"
       PROXY_PORT: "62769"
@@ -35,8 +33,7 @@ services:
     devices:
       - "/dev/kvm:/dev/kvm"
     ports:
-      - "50922:10022"
-      - "6000:5999"
+      ${MACOS_PORTS:-"50922:10022,5999:5999"}
     environment:
       - GENERATE_UNIQUE=true
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
