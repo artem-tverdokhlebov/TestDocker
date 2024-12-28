@@ -43,5 +43,5 @@ services:
       - DEVICE_MODEL=MacBookPro16,1
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=ventura
-      - EXTRA=-display none -vnc 0.0.0.0:99,password=on -monitor stdio
+      - EXTRA=-display none -vnc 0.0.0.0:99
       - VNC_PASSWORD=qwerty
