@@ -1,0 +1,36 @@
+version: "3.8"
+
+services:
+  proxy:
+    build: ./proxy
+    container_name: proxy
+    privileged: true
+    ports:
+      - "50922:10022"
+      - "5999:5999"
+    environment:
+      PROXY_IP: "142.252.4.175"
+      PROXY_PORT: "62769"
+      PROXY_USER: "FW1afJLA"
+      PROXY_PASS: "3HXPrZEc"
+    healthcheck:
+      test: ["CMD", "cat", "/tmp/redsocks_ready"]
+      interval: 2s
+      timeout: 2s
+      retries: 5
+      start_period: 2s
+
+  curl-client:
+    image: alpine:latest
+    container_name: curl-client
+    depends_on:
+      proxy:
+        condition: service_healthy
+    network_mode: "container:proxy"
+    command: >
+      sh -c "
+      apk add --no-cache curl &&
+      echo 'Fetching IP...' &&
+      curl -s https://api.ipify.org &&
+      echo
+      "
