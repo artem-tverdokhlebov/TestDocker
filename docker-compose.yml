@@ -1,8 +1,5 @@
-# PROXY_MODE=container:proxy docker compose -p macos_project up --build
-# PROXY_MODE=bridge docker compose -p macos_project up --build
-
-# PROXY_MODE=container:proxy docker compose -p macos_project up
-# PROXY_MODE=bridge docker compose -p macos_project up
+# docker compose -p macos_project up --build
+# docker compose -p macos_project up
 
 version: "3.8"
 
@@ -15,10 +12,10 @@ services:
       - "50922:10022"
       - "5999:5999"
     environment:
-      PROXY_IP: "142.252.4.175"
-      PROXY_PORT: "62769"
-      PROXY_USER: "FW1afJLA"
-      PROXY_PASS: "3HXPrZEc"
+      PROXY_IP: ${PROXY_IP}
+      PROXY_PORT: ${PROXY_PORT}
+      PROXY_USER: ${PROXY_USER}
+      PROXY_PASS: ${PROXY_PASS}
     healthcheck:
       test: ["CMD", "cat", "/tmp/redsocks_ready"]
       interval: 2s
@@ -32,16 +29,12 @@ services:
     depends_on:
       proxy:
         condition: service_healthy
-    network_mode: ${PROXY_MODE:-bridge}
+    network_mode: container:proxy
     devices:
       - "/dev/kvm:/dev/kvm"
-    ports:
-      - "50923:10022"
-      - "6000:5999"
     environment:
-      - GENERATE_UNIQUE=true 
-      - DEVICE_MODEL=MacBookPro16,1
+      - GENERATE_UNIQUE=true
+      - DEVICE_MODEL=${DEVICE_MODEL}
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=ventura
       - EXTRA=-display none -vnc 0.0.0.0:99
-      - VNC_PASSWORD=qwerty
