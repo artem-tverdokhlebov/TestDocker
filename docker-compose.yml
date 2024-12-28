@@ -1,6 +1,8 @@
 # PROXY_MODE=container:proxy docker compose -p macos_project up --build
-
 # PROXY_MODE=bridge docker compose -p macos_project up --build
+
+# PROXY_MODE=container:proxy docker compose -p macos_project up
+# PROXY_MODE=bridge docker compose -p macos_project up
 
 version: "3.8"
 
@@ -41,5 +43,5 @@ services:
       - DEVICE_MODEL=MacBookPro16,1
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=ventura
-      - EXTRA=-display none -vnc 0.0.0.0:99,password=on
+      - EXTRA=-display none -vnc 0.0.0.0:99,password=on -monitor stdio
       - VNC_PASSWORD=qwerty
