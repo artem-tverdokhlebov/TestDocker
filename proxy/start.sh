@@ -26,7 +26,7 @@ redsocks {
   local_port = 12345;
   ip = ${PROXY_IP};
   port = ${PROXY_PORT};
-  type = ${PROXY_TYPE};
+  type = socks5;
   login = "${PROXY_USER}";
   password = "${PROXY_PASS}";
 }
