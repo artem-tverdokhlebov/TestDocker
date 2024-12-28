@@ -1,6 +1,8 @@
 # docker compose -p macos_project up --build
 # docker compose -p macos_project up
 
+# docker compose -p macos_project build --no-cache && docker compose -p macos_project up
+
 # Steps:
 # clean vds, ubuntu 24.04
 # install xcfe4, vnc setup
