@@ -1,6 +1,8 @@
 # PROXY_MODE=bridge docker compose up --build
 # PROXY_MODE=container:proxy docker compose up --build
 
+# PROXY_MODE=bridge docker compose -p macos_project up --build
+
 version: "3.8"
 
 services:
@@ -41,8 +43,3 @@ services:
       - SHORTNAME=ventura
       - EXTRA=-display none -vnc 0.0.0.0:99,password=on
       - VNC_PASSWORD=qwerty
-    volumes:
-      - macos-data:/home/arch/OSX-KVM
-
-volumes:
-  macos-data:
