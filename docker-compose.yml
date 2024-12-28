@@ -1,3 +1,6 @@
+# PROXY_MODE=bridge docker compose up --build
+# PROXY_MODE=container:proxy docker compose up --build
+
 version: "3.8"
 
 services:
