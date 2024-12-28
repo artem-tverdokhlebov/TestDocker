@@ -1,6 +1,13 @@
 # docker compose -p macos_project up --build
 # docker compose -p macos_project up
 
+# Steps:
+# clean vds, ubuntu 24.04
+# install xcfe4, vnc setup
+# docker install
+# clone repo, create .env from .env.example
+# run "docker compose -p macos_project up --build"
+
 version: "3.8"
 
 services:
@@ -18,10 +25,10 @@ services:
       PROXY_PASS: ${PROXY_PASS}
     healthcheck:
       test: ["CMD", "cat", "/tmp/redsocks_ready"]
-      interval: 2s
-      timeout: 2s
+      interval: 10s
+      timeout: 5s
       retries: 5
-      start_period: 2s
+      start_period: 10s
 
   macos:
     image: sickcodes/docker-osx:latest
