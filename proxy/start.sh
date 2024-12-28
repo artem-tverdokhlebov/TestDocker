@@ -14,6 +14,10 @@ iptables -t nat -A OUTPUT -d 142.252.4.175 -p tcp --dport 62769 -j RETURN
 # Exclude loopback traffic in general
 iptables -t nat -A OUTPUT -o lo -j RETURN
 
+# Exclude traffic for SSH (port 50922) and VNC (port 5999)
+iptables -t nat -A OUTPUT -p tcp --dport 10022 -j RETURN  # Internal SSH port
+iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
+
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
