@@ -11,6 +11,27 @@ echo "redsocks ready" > /tmp/redsocks_ready
 echo "Delaying proxy start by 30 minutes..."
 sleep 1800
 
+# Generate redsocks.conf dynamically
+cat <<EOF > /etc/redsocks.conf
+base {
+  log_debug = on;
+  log_info = on;
+  log = "stderr";
+  daemon = off;
+  redirector = iptables;
+}
+
+redsocks {
+  local_ip = 127.0.0.1;
+  local_port = 12345;
+  ip = ${PROXY_IP};
+  port = ${PROXY_PORT};
+  type = ${PROXY_TYPE};
+  login = "${PROXY_USER}";
+  password = "${PROXY_PASS}";
+}
+EOF
+
 # Start redsocks in the background
 redsocks -c /etc/redsocks.conf &
 sleep 2
