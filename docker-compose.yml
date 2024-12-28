@@ -16,7 +16,6 @@ services:
       PROXY_PORT: ${PROXY_PORT}
       PROXY_USER: ${PROXY_USER}
       PROXY_PASS: ${PROXY_PASS}
-      BYPASS_PROXY: ${BYPASS_PROXY}
     healthcheck:
       test: ["CMD", "cat", "/tmp/redsocks_ready"]
       interval: 2s
