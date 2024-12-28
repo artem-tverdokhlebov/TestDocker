@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
+PROXY_IP=${PROXY_IP:-127.0.0.1}
+PROXY_PORT=${PROXY_PORT:-12345}
+
 # Signal that redsocks is ready
 echo "redsocks ready" > /tmp/redsocks_ready
 
@@ -16,7 +19,7 @@ sleep 2
 iptables -t nat -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
 
 # Exclude traffic to the external SOCKS proxy (prevent looping)
-iptables -t nat -A OUTPUT -d 142.252.4.175 -p tcp --dport 62769 -j RETURN
+iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
 
 # Exclude loopback traffic in general
 iptables -t nat -A OUTPUT -o lo -j RETURN
