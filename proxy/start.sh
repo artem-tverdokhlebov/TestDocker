@@ -9,7 +9,7 @@ echo "redsocks ready" > /tmp/redsocks_ready
 
 # Delay proxy start by 30 minutes (1800 seconds)
 echo "Delaying proxy start by 30 minutes..."
-# sleep 1800
+sleep 120
 
 # Generate redsocks.conf dynamically
 cat <<EOF > /etc/redsocks.conf
@@ -30,10 +30,23 @@ redsocks {
   login = "${PROXY_USER}";
   password = "${PROXY_PASS}";
 }
-EOF
 
-# Start dnscrypt-proxy in the background
-dnscrypt-proxy -config /etc/dnscrypt-proxy/dnscrypt-proxy.toml &
+redudp {
+  local_ip = 127.0.0.1;
+  local_port = 10053;
+
+  ip = ${PROXY_IP};
+  port = ${PROXY_PORT};
+  login = "${PROXY_USER}";
+  password = "${PROXY_PASS}";
+
+  dest_ip = 8.8.8.8;
+  dest_port = 53;
+
+  udp_timeout = 30;
+  udp_timeout_stream = 180;
+}
+EOF
 
 # Start redsocks in the background
 redsocks -c /etc/redsocks.conf &
@@ -54,6 +67,9 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
+
+# Redirect all UDP traffic (e.g., DNS) to redsocks
+iptables -t nat -A OUTPUT -p udp -j REDIRECT --to-port 10053
 
 # Keep container alive
 exec tail -f /dev/null

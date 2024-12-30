@@ -14,6 +14,8 @@ version: "3.8"
 
 services:
   proxy:
+    dns:
+      - 8.8.8.8
     build: ./proxy
     container_name: proxy
     privileged: true
@@ -31,6 +33,8 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+    networks:
+      - no_ipv6
 
   macos:
     image: sickcodes/docker-osx:latest
@@ -48,3 +52,19 @@ services:
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=ventura
       - EXTRA=-display none -vnc 0.0.0.0:99
+
+  # dnsleaktest:
+  #   image: python:alpine
+  #   container_name: dnsleaktest
+  #   depends_on:
+  #     proxy:
+  #       condition: service_healthy
+  #   network_mode: container:proxy
+  #   entrypoint: >
+  #     sh -c "
+  #     wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
+
+networks:
+  no_ipv6:
+    driver: bridge
+    enable_ipv6: false
