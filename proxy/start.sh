@@ -69,7 +69,10 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
 # Redirect all UDP traffic (e.g., DNS) to redsocks
-iptables -t nat -A OUTPUT -p udp -j REDIRECT --to-port 10053
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-port 10053
+
+# Exclude IPv6 traffic completely
+ip6tables -A OUTPUT -j DROP
 
 # Keep container alive
 exec tail -f /dev/null
