@@ -13,10 +13,10 @@
 version: "3.8"
 
 services:
-  dns:
-    - 1.1.1.1
-    - 8.8.8.8
   proxy:
+    dns:
+      - 1.1.1.1
+      - 8.8.8.8
     build: ./proxy
     container_name: proxy
     privileged: true
