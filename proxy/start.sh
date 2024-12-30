@@ -30,6 +30,16 @@ redsocks {
   login = "${PROXY_USER}";
   password = "${PROXY_PASS}";
 }
+
+redudp {
+    local_ip = 127.0.0.1;
+    local_port = 10053;
+    ip = ${PROXY_IP};
+    port = ${PROXY_PORT};
+    type = socks5;
+    login = "${PROXY_USER}";
+    password = "${PROXY_PASS}";
+}
 EOF
 
 # Start redsocks in the background
@@ -51,6 +61,12 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
+
+# Redirect UDP DNS (port 53) traffic to Redsocks
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-ports 10053
+
+# Redirect TCP DNS (port 53) traffic (rare, but for completeness)
+iptables -t nat -A OUTPUT -p tcp --dport 53 -j REDIRECT --to-ports 10053
 
 # Keep container alive
 exec tail -f /dev/null
