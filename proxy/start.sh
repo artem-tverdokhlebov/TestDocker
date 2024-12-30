@@ -8,8 +8,8 @@ PROXY_PORT=${PROXY_PORT:-12345}
 echo "redsocks ready" > /tmp/redsocks_ready
 
 # Delay proxy start by 30 minutes (1800 seconds)
-echo "Delaying proxy start by 30 minutes..."
-sleep 1800
+# echo "Delaying proxy start by 30 minutes..."
+# sleep 1800
 
 # Generate redsocks.conf dynamically
 cat <<EOF > /etc/redsocks.conf
