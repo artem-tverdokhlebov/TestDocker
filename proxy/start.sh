@@ -9,7 +9,7 @@ echo "redsocks ready" > /tmp/redsocks_ready
 
 # Delay proxy start by 30 minutes (1800 seconds)
 echo "Delaying proxy start by 30 minutes..."
-sleep 120
+# sleep 1800
 
 # Generate redsocks.conf dynamically
 cat <<EOF > /etc/redsocks.conf
@@ -32,36 +32,6 @@ redsocks {
 }
 EOF
 
-mkdir -p /etc/dnscrypt-proxy
-mkdir -p /var/log/dnscrypt-proxy
-
-# Generate dnscrypt-proxy configuration dynamically
-cat <<EOF > /etc/dnscrypt-proxy/dnscrypt-proxy.toml
-server_names = ['scaleway-fr', 'google', 'cloudflare']
-
-listen_addresses = ['0.0.0.0:53']
-
-max_clients = 250
-log_level = 2
-
-[socks_proxy]
-    enabled = true
-    address = 'socks5://${PROXY_IP}:${PROXY_PORT}'
-    user_name = '${PROXY_USER}'
-    password = '${PROXY_PASS}'
-
-[log]
-    file = '/var/log/dnscrypt-proxy.log'
-    format = 'text'
-
-[sources]
-  [sources.public-resolvers]
-    urls = ['https://download.dnscrypt.info/resolvers-list/v3/public-resolvers.md']
-    cache_file = '/etc/dnscrypt-proxy/public-resolvers.md'
-    minisign_key = 'RWQYXXuJLavpaudWHtsg7XSUY+ezWi8pDCQdNksz5nIAiizF6GgFfW3J'
-    refresh_delay = 72
-EOF
-
 # Start dnscrypt-proxy in the background
 dnscrypt-proxy -config /etc/dnscrypt-proxy/dnscrypt-proxy.toml &
 
@@ -71,9 +41,6 @@ sleep 2
 
 # Exclude traffic destined for the redsocks port (12345)
 iptables -t nat -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
-
-# Redirect all DNS traffic (UDP 53) to dnscrypt-proxy
-iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-port 53
 
 # Exclude traffic to the external SOCKS proxy (prevent looping)
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
