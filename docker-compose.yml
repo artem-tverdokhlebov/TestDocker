@@ -15,7 +15,7 @@ version: "3.8"
 services:
   proxy:
     dns:
-      - 1.1.1.1
+      - 8.8.4.4
       - 8.8.8.8
     build: ./proxy
     container_name: proxy

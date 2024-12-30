@@ -30,16 +30,6 @@ redsocks {
   login = "${PROXY_USER}";
   password = "${PROXY_PASS}";
 }
-
-redudp {
-    local_ip = 127.0.0.1;
-    local_port = 10053;
-    ip = ${PROXY_IP};
-    port = ${PROXY_PORT};
-    type = socks5;
-    login = "${PROXY_USER}";
-    password = "${PROXY_PASS}";
-}
 EOF
 
 # Start redsocks in the background
