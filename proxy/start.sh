@@ -45,6 +45,8 @@ redudp {
 
   udp_timeout = 30;
   udp_timeout_stream = 180;
+
+  type = socks5;
 }
 EOF
 
@@ -52,11 +54,13 @@ EOF
 redsocks -c /etc/redsocks.conf &
 sleep 2
 
-# Exclude traffic destined for the redsocks port (12345)
+# Exclude traffic destined for the redsocks port (12345 and 10053)
 iptables -t nat -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
+iptables -t nat -A OUTPUT -o lo -p udp --dport 10053 -j RETURN
 
 # Exclude traffic to the external SOCKS proxy (prevent looping)
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
+iptables -t nat -A OUTPUT -d ${PROXY_IP} -p udp --dport ${PROXY_PORT} -j RETURN
 
 # Exclude loopback traffic in general
 iptables -t nat -A OUTPUT -o lo -j RETURN
@@ -69,9 +73,10 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
 # Redirect all UDP traffic (e.g., DNS) to redsocks
+iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 10053
 iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-port 10053
 
-# Exclude IPv6 traffic completely
+# Drop IPv6 traffic
 ip6tables -A OUTPUT -j DROP
 
 # Keep container alive
