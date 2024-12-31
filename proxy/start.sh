@@ -45,8 +45,6 @@ redudp {
 
   udp_timeout = 30;
   udp_timeout_stream = 180;
-
-  type = socks5;
 }
 EOF
 
