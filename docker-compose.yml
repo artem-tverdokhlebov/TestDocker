@@ -44,9 +44,6 @@ services:
   macos:
     image: sickcodes/docker-osx:latest
     container_name: macos-13
-    depends_on:
-      proxy:
-        condition: service_healthy
     network_mode: container:proxy
     devices:
       - "/dev/kvm:/dev/kvm"
