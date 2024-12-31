@@ -12,14 +12,13 @@
 
 services:
   proxy:
-    dns:
-      - 1.2.3.4
     build: ./proxy
     container_name: proxy
     privileged: true
     ports:
       - "50922:10022"
       - "5999:5999"
+      - "53:53/udp"
     environment:
       PROXY_IP: ${PROXY_IP}
       PROXY_PORT: ${PROXY_PORT}
@@ -32,30 +31,30 @@ services:
       retries: 5
       start_period: 10s
 
-  # macos:
-  #   image: sickcodes/docker-osx:latest
-  #   container_name: macos-13
+  # dnsleaktest:
+  #   image: python:alpine
+  #   container_name: dnsleaktest
   #   depends_on:
   #     proxy:
   #       condition: service_healthy
   #   network_mode: container:proxy
-  #   devices:
-  #     - "/dev/kvm:/dev/kvm"
-  #   environment:
-  #     - RAM=16
-  #     - GENERATE_UNIQUE=true
-  #     - DEVICE_MODEL=${DEVICE_MODEL}
-  #     - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
-  #     - SHORTNAME=ventura
-  #     - EXTRA=-display none -vnc 0.0.0.0:99
+  #   entrypoint: >
+  #     sh -c "
+  #     wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
 
-  dnsleaktest:
-    image: python:alpine
-    container_name: dnsleaktest
+  macos:
+    image: sickcodes/docker-osx:latest
+    container_name: macos-13
     depends_on:
       proxy:
         condition: service_healthy
     network_mode: container:proxy
-    entrypoint: >
-      sh -c "
-      wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
+    devices:
+      - "/dev/kvm:/dev/kvm"
+    environment:
+      - RAM=16
+      - GENERATE_UNIQUE=true
+      - DEVICE_MODEL=${DEVICE_MODEL}
+      - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
+      - SHORTNAME=ventura
+      - EXTRA=-display none -vnc 0.0.0.0:99

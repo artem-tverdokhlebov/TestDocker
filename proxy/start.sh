@@ -4,6 +4,11 @@ set -ex
 PROXY_IP=${PROXY_IP:-127.0.0.1}
 PROXY_PORT=${PROXY_PORT:-12345}
 
+DNS_SERVER=${DNS_SERVER:-1.1.1.1}
+DNS_PORT=${DNS_PORT:-53}
+
+LISTEN_ADDRESS=${LISTEN_ADDRESS:-127.0.0.1}
+
 # Delay proxy start by 30 minutes (1800 seconds)
 # echo "Delaying proxy start by 30 minutes..."
 # sleep 120
@@ -37,8 +42,8 @@ redudp {
   login = "${PROXY_USER}";
   password = "${PROXY_PASS}";
 
-  dest_ip = 8.8.8.8;
-  dest_port = 53;
+  dest_ip = ${DNS_SERVER};
+  dest_port = ${DNS_PORT};
 
   udp_timeout = 30;
   udp_timeout_stream = 180;
@@ -57,9 +62,6 @@ iptables -t nat -A OUTPUT -o lo -p udp --dport 10053 -j RETURN
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p udp --dport ${PROXY_PORT} -j RETURN
 
-# Exclude traffic to the external SOCKS proxy (prevent looping)
-iptables -t nat -A OUTPUT -d 8.8.8.8 -p udp --dport 53 -j RETURN
-
 # Exclude loopback traffic in general
 iptables -t nat -A OUTPUT -o lo -j RETURN
 
@@ -70,10 +72,29 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
-iptables -t nat -A OUTPUT -p udp -d 1.2.3.4 --dport 53 -j REDIRECT --to-port 10053
+# Configure iptables to redirect DNS traffic
+iptables -t nat -A OUTPUT -o lo -p udp --dport 53 -j RETURN
+iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-port 10053
 
 # Drop IPv6 traffic
 ip6tables -A OUTPUT -j DROP
+
+# DNS
+
+# Create dnsmasq configuration
+cat <<EOF > /etc/dnsmasq.conf
+no-resolv
+server=${LISTEN_ADDRESS}#10053  # Route DNS to redsocks UDP port
+listen-address=${LISTEN_ADDRESS}
+EOF
+
+# Update resolv.conf to use dnsmasq
+cat <<EOF > /etc/resolv.conf
+nameserver ${LISTEN_ADDRESS}
+EOF
+
+# Start dnsmasq in the background
+dnsmasq -k &
 
 # Signal that redsocks is ready
 echo "redsocks ready" > /tmp/redsocks_ready
