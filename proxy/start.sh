@@ -38,7 +38,7 @@ redsocks {
 
 redudp {
   local_ip = 127.0.0.1;
-  local_port = 10053;
+  local_port = 53;
 
   ip = ${PROXY_IP};
   port = ${PROXY_PORT};
@@ -74,10 +74,6 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
-
-# Redirect all UDP traffic (e.g., DNS) to redsocks
-iptables -t nat -A PREROUTING -p udp --dport 53 -j REDIRECT --to-port 10053
-iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-port 10053
 
 # Drop IPv6 traffic
 ip6tables -A OUTPUT -j DROP
