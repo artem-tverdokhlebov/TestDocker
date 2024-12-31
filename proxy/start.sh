@@ -76,9 +76,6 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 iptables -t nat -A OUTPUT -o lo -p udp --dport 53 -j RETURN
 iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-port 10053
 
-# Drop IPv6 traffic
-ip6tables -A OUTPUT -j DROP
-
 # DNS
 
 # Create dnsmasq configuration
