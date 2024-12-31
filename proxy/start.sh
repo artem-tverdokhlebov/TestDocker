@@ -1,6 +1,11 @@
 #!/usr/bin/env bash
 set -ex
 
+# Disable IPv6 system-wide inside the container
+sysctl -w net.ipv6.conf.all.disable_ipv6=1
+sysctl -w net.ipv6.conf.default.disable_ipv6=1
+sysctl -w net.ipv6.conf.lo.disable_ipv6=1
+
 PROXY_IP=${PROXY_IP:-127.0.0.1}
 PROXY_PORT=${PROXY_PORT:-12345}
 
