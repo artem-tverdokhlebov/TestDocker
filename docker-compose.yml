@@ -10,12 +10,10 @@
 # clone repo, create .env from .env.example
 # run "docker compose -p macos_project up --build"
 
-version: "3.8"
-
 services:
   proxy:
     dns:
-      - 8.8.8.8
+      - 1.2.3.4
     build: ./proxy
     container_name: proxy
     privileged: true
@@ -33,38 +31,31 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-    networks:
-      - no_ipv6
 
-  macos:
-    image: sickcodes/docker-osx:latest
-    container_name: macos-13
-    depends_on:
-      proxy:
-        condition: service_healthy
-    network_mode: container:proxy
-    devices:
-      - "/dev/kvm:/dev/kvm"
-    environment:
-      - RAM=16
-      - GENERATE_UNIQUE=true
-      - DEVICE_MODEL=${DEVICE_MODEL}
-      - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
-      - SHORTNAME=ventura
-      - EXTRA=-display none -vnc 0.0.0.0:99
-
-  # dnsleaktest:
-  #   image: python:alpine
-  #   container_name: dnsleaktest
+  # macos:
+  #   image: sickcodes/docker-osx:latest
+  #   container_name: macos-13
   #   depends_on:
   #     proxy:
   #       condition: service_healthy
   #   network_mode: container:proxy
-  #   entrypoint: >
-  #     sh -c "
-  #     wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
+  #   devices:
+  #     - "/dev/kvm:/dev/kvm"
+  #   environment:
+  #     - RAM=16
+  #     - GENERATE_UNIQUE=true
+  #     - DEVICE_MODEL=${DEVICE_MODEL}
+  #     - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
+  #     - SHORTNAME=ventura
+  #     - EXTRA=-display none -vnc 0.0.0.0:99
 
-networks:
-  no_ipv6:
-    driver: bridge
-    enable_ipv6: false
+  dnsleaktest:
+    image: python:alpine
+    container_name: dnsleaktest
+    depends_on:
+      proxy:
+        condition: service_healthy
+    network_mode: container:proxy
+    entrypoint: >
+      sh -c "
+      wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"

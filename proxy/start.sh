@@ -1,20 +1,12 @@
 #!/usr/bin/env bash
 set -ex
 
-# Disable IPv6 system-wide inside the container
-sysctl -w net.ipv6.conf.all.disable_ipv6=1
-sysctl -w net.ipv6.conf.default.disable_ipv6=1
-sysctl -w net.ipv6.conf.lo.disable_ipv6=1
-
 PROXY_IP=${PROXY_IP:-127.0.0.1}
 PROXY_PORT=${PROXY_PORT:-12345}
 
-# Signal that redsocks is ready
-echo "redsocks ready" > /tmp/redsocks_ready
-
 # Delay proxy start by 30 minutes (1800 seconds)
-echo "Delaying proxy start by 30 minutes..."
-sleep 120
+# echo "Delaying proxy start by 30 minutes..."
+# sleep 120
 
 # Generate redsocks.conf dynamically
 cat <<EOF > /etc/redsocks.conf
@@ -65,6 +57,9 @@ iptables -t nat -A OUTPUT -o lo -p udp --dport 10053 -j RETURN
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p udp --dport ${PROXY_PORT} -j RETURN
 
+# Exclude traffic to the external SOCKS proxy (prevent looping)
+iptables -t nat -A OUTPUT -d 8.8.8.8 -p udp --dport 53 -j RETURN
+
 # Exclude loopback traffic in general
 iptables -t nat -A OUTPUT -o lo -j RETURN
 
@@ -75,10 +70,13 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
-iptables -t nat -A OUTPUT -p udp -d 8.8.8.8 --dport 53 -j REDIRECT --to-port 10053
+iptables -t nat -A OUTPUT -p udp -d 1.2.3.4 --dport 53 -j REDIRECT --to-port 10053
 
 # Drop IPv6 traffic
 ip6tables -A OUTPUT -j DROP
+
+# Signal that redsocks is ready
+echo "redsocks ready" > /tmp/redsocks_ready
 
 # Keep container alive
 exec tail -f /dev/null
