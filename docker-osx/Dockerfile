@@ -4,9 +4,6 @@ FROM sickcodes/docker-osx:latest
 # Copy the pre-provided BaseSystem.img into the container
 COPY ./Ventura-full.qcow2 /home/arch/OSX-KVM/BaseSystem.img
 
-# Ensure permissions are set correctly for BaseSystem.img
-RUN chmod 644 /home/arch/OSX-KVM/BaseSystem.img
-
 # Create a fresh macOS HDD image (128GB) if not already created
 RUN qemu-img create -f qcow2 /home/arch/OSX-KVM/mac_hdd_ng.img 128G
 
