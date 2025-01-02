@@ -44,6 +44,7 @@ services:
   macos:
     image: sickcodes/docker-osx:latest
     container_name: macos-14
+    privileged: true
     network_mode: container:proxy
     devices:
       - "/dev/kvm:/dev/kvm"
