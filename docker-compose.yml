@@ -56,5 +56,4 @@ services:
       - SHORTNAME=ventura
       - EXTRA=-display none -vnc 0.0.0.0:99
     volumes:
-      - ./Ventura-full.img:/home/arch/OSX-KVM/BaseSystem.img:rw
-    user: arch
+      - ./Ventura-full.img:/home/arch/OSX-KVM/BaseSystem.img:z
