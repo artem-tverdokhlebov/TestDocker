@@ -42,7 +42,7 @@ services:
   #     wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
 
   macos:
-    image: sickcodes/docker-osx:latest
+    build: ./docker-osx
     container_name: macos-14
     privileged: true
     network_mode: container:proxy
