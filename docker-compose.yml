@@ -55,4 +55,4 @@ services:
       - SHORTNAME=ventura
       - EXTRA=-display none -vnc 0.0.0.0:99
     volumes:
-      - ./BaseSystem.img:/home/arch/OSX-KVM/BaseSystem.img
+      - ./BaseSystem.img:/home/arch/OSX-KVM/BaseSystem.img:z
