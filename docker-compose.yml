@@ -44,6 +44,9 @@ services:
   macos:
     build: ./docker-osx
     container_name: macos-14
+    depends_on:
+      proxy:
+        condition: service_healthy
     privileged: true
     network_mode: container:proxy
     devices:
