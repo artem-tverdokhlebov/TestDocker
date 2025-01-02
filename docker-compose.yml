@@ -43,7 +43,7 @@ services:
 
   macos:
     image: sickcodes/docker-osx:latest
-    container_name: macos-13
+    container_name: macos-14
     network_mode: container:proxy
     devices:
       - "/dev/kvm:/dev/kvm"
@@ -51,6 +51,8 @@ services:
       - RAM=16
       - GENERATE_UNIQUE=true
       - DEVICE_MODEL=${DEVICE_MODEL}
+      - CPU='Haswell-noTSX'
+      - CPUID_FLAGS='kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on'
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
-      - SHORTNAME=ventura
+      - SHORTNAME=sonoma
       - EXTRA=-display none -vnc 0.0.0.0:99
