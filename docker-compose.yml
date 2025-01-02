@@ -51,8 +51,8 @@ services:
       - RAM=16
       - GENERATE_UNIQUE=true
       - DEVICE_MODEL=${DEVICE_MODEL}
-      - CPU='Haswell-noTSX'
-      - CPUID_FLAGS='kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on'
+      - CPU="Haswell-noTSX"
+      - CPUID_FLAGS="kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on"
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=sonoma
       - EXTRA=-display none -vnc 0.0.0.0:99
