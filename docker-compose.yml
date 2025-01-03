@@ -51,7 +51,6 @@ services:
     environment:
       - RAM=16
       - CPU=max
-      - CPUID_FLAGS=vendor=GenuineIntel
       - GENERATE_UNIQUE=true
       - NOPICKER=true
       - DEVICE_MODEL=${DEVICE_MODEL}
