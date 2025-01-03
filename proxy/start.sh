@@ -10,7 +10,7 @@ DNS_PORT=${DNS_PORT:-53}
 LISTEN_ADDRESS=${LISTEN_ADDRESS:-127.0.0.1}
 
 # Delay proxy start by 30 minutes (1800 seconds)
-echo "Delaying proxy start by 2 minutes..."
+echo "Delaying proxy start by 30 minutes..."
 sleep 1800
 
 # Generate redsocks.conf dynamically
