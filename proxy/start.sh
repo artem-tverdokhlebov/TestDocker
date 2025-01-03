@@ -43,7 +43,6 @@ iptables -t nat -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
 
 # Exclude traffic to the external SOCKS proxy (prevent looping)
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
-iptables -t nat -A OUTPUT -d ${PROXY_IP} -p udp --dport ${PROXY_PORT} -j RETURN
 
 # Exclude loopback traffic in general
 iptables -t nat -A OUTPUT -o lo -j RETURN
@@ -54,6 +53,12 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
+
+# Exclude UDP traffic to 1.1.1.1 on port 53 (DNS)
+iptables -A OUTPUT -p udp -d 1.1.1.1 --dport 53 -j ACCEPT
+
+# Drop all other outbound UDP traffic
+iptables -A OUTPUT -p udp -j DROP
 
 # DNS
 
