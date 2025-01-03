@@ -53,5 +53,5 @@ services:
       - GENERATE_UNIQUE=true
       - DEVICE_MODEL=${DEVICE_MODEL}
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
-      - SHORTNAME=ventura
+      - SHORTNAME=sonoma
       - EXTRA=-display none -vnc 0.0.0.0:99 -no-picker
