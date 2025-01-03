@@ -16,8 +16,8 @@ sleep 1800
 # Generate redsocks.conf dynamically
 cat <<EOF > /etc/redsocks.conf
 base {
-  log_debug = on;
-  log_info = on;
+  log_debug = off;
+  log_info = off;
   log = "stderr";
   daemon = off;
   redirector = iptables;
@@ -32,31 +32,14 @@ redsocks {
   login = "${PROXY_USER}";
   password = "${PROXY_PASS}";
 }
-
-redudp {
-  local_ip = 127.0.0.1;
-  local_port = 10053;
-
-  ip = ${PROXY_IP};
-  port = ${PROXY_PORT};
-  login = "${PROXY_USER}";
-  password = "${PROXY_PASS}";
-
-  dest_ip = ${DNS_SERVER};
-  dest_port = ${DNS_PORT};
-
-  udp_timeout = 30;
-  udp_timeout_stream = 180;
-}
 EOF
 
 # Start redsocks in the background
 redsocks -c /etc/redsocks.conf &
 sleep 2
 
-# Exclude traffic destined for the redsocks port (12345 and 10053)
+# Exclude traffic destined for the redsocks port (12345)
 iptables -t nat -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
-iptables -t nat -A OUTPUT -o lo -p udp --dport 10053 -j RETURN
 
 # Exclude traffic to the external SOCKS proxy (prevent looping)
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
@@ -72,27 +55,26 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
-# Configure iptables to redirect DNS traffic
-iptables -t nat -A OUTPUT -o lo -p udp --dport 53 -j RETURN
-iptables -t nat -A OUTPUT -p udp --dport 53 -j REDIRECT --to-port 10053
-
 # DNS
 
-# Create dnsmasq configuration
-cat <<EOF > /etc/dnsmasq.conf
-no-resolv
-server=${LISTEN_ADDRESS}#10053
-listen-address=${LISTEN_ADDRESS}
+# DNSDIST CONFIGURATION
+cat <<EOF > /etc/dnsdist.conf
+setLocal("${LISTEN_ADDRESS}:${DNS_PORT}")
+
+newServer({address="${DNS_SERVER}:${DNS_PORT}", tcpOnly=true})
+
+-- Log queries (optional)
+addAction(AllRule(), LogAction())
 EOF
 
-# Update resolv.conf to use dnsmasq
+# Start dnsdist in the background
+dnsdist --disable-syslog --supervised -C /etc/dnsdist.conf &
+sleep 2
+
+# Update resolv.conf to use dnsdist
 cat <<EOF > /etc/resolv.conf
 nameserver ${LISTEN_ADDRESS}
 EOF
-
-# Start dnsmasq in the background
-dnsmasq -k &
-sleep 2
 
 # Signal that redsocks is ready
 echo "redsocks ready" > /tmp/redsocks_ready
