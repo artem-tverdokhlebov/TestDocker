@@ -13,8 +13,8 @@ def resolve_domain_via_proxy(proxy_host, proxy_port, username, password, domain)
         # Google DNS server address and port
         dns_server = ("8.8.8.8", 53)
 
-        # Construct a simple DNS query for the domain
-        query_id = b"\x01\x00"  # Query ID
+        # Construct a DNS query for the domain
+        query_id = b"\xaa\xbb"  # Random query ID
         flags = b"\x01\x00"  # Standard query
         q_count = b"\x00\x01"  # One question
         answer_rrs = b"\x00\x00"
@@ -38,9 +38,22 @@ def resolve_domain_via_proxy(proxy_host, proxy_port, username, password, domain)
         response = sock.recv(512)
         if response:
             print("DNS query sent successfully.")
-            ip_start = response.find(domain_query) + len(domain_query) + 4
-            ip_address = struct.unpack(">4B", response[ip_start:ip_start + 4])
-            print(f"{domain} resolved to {'.'.join(map(str, ip_address))}")
+            # Validate query ID
+            if response[:2] != query_id:
+                print("Invalid response: Query ID mismatch.")
+                return
+            # Extract IP addresses from the answer section
+            answer_start = response.find(domain_query) + len(domain_query) + 4
+            ip_addresses = []
+            while answer_start < len(response):
+                if response[answer_start + 2:answer_start + 4] == b"\x00\x01":  # Type A
+                    ip = struct.unpack(">4B", response[answer_start + 12:answer_start + 16])
+                    ip_addresses.append(".".join(map(str, ip)))
+                answer_start += 16
+            if ip_addresses:
+                print(f"{domain} resolved to: {', '.join(ip_addresses)}")
+            else:
+                print("No valid IP addresses found in the DNS response.")
         else:
             print("No response received from DNS server.")
 
