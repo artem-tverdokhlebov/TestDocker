@@ -64,8 +64,11 @@ iptables -A OUTPUT -p udp --dport 5353 -j ACCEPT
 # Allow multicast traffic (224.0.0.0/4)
 iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j ACCEPT
 
-# Allow traffic in Docker network
-iptables -A OUTPUT -p udp -d 172.16.0.0/12 -j ACCEPT
+# Allow traffic to local networks (loopback, private IP ranges)
+iptables -A OUTPUT -p udp -d 127.0.0.0/8 -j ACCEPT
+# iptables -A OUTPUT -p udp -d 10.0.0.0/8 -j ACCEPT
+# iptables -A OUTPUT -p udp -d 172.16.0.0/12 -j ACCEPT
+# iptables -A OUTPUT -p udp -d 192.168.0.0/16 -j ACCEPT
 
 # Block STUN/TURN servers (common internet UDP services)
 iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
