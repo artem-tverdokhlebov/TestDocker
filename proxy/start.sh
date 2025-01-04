@@ -55,17 +55,9 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
-# Allow DNS traffic (UDP port 53)
-iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
-
-# Allow DNS responses from the server (incoming)
-iptables -A INPUT -p udp --sport 53 -j ACCEPT
-
-# Block STUN/TURN servers
-iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
-
-# Block general UDP traffic in the dynamic port range
-iptables -A OUTPUT -p udp --dport 49152:65535 -j DROP
+# Block and log UDP traffic
+iptables -A OUTPUT -p udp -j LOG --log-prefix "BLOCKED UDP: " --log-level 4
+iptables -A OUTPUT -p udp -j DROP
 
 # DNS
 
@@ -92,4 +84,4 @@ EOF
 echo "redsocks ready" > /tmp/redsocks_ready
 
 # Keep container alive
-exec tail -f /dev/null
+exec tail -f /var/log/iptables.log /dev/null
