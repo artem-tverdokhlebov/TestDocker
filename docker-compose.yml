@@ -31,28 +31,16 @@ services:
       retries: 5
       start_period: 10s
 
-  # network-logger:
-  #   image: nicolaka/netshoot  # Prebuilt image with networking tools
-  #   container_name: network-logger
-  #   command: >
-  #     /bin/sh -c "tcpdump -i eth0 -w /traffic/app_traffic.pcap"
-  #   volumes:
-  #     - ./traffic:/traffic
-  #   network_mode: container:proxy
-  #   cap_add:
-  #     - NET_ADMIN
-  #     - NET_RAW
-
-  # dnsleaktest:
-  #   image: python:alpine
-  #   container_name: dnsleaktest
-  #   depends_on:
-  #     proxy:
-  #       condition: service_healthy
-  #   network_mode: container:proxy
-  #   entrypoint: >
-  #     sh -c "
-  #     wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
+  dnsleaktest:
+    image: python:alpine
+    container_name: dnsleaktest
+    depends_on:
+      proxy:
+        condition: service_healthy
+    network_mode: container:proxy
+    entrypoint: >
+      sh -c "
+      wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
 
   macos:
     image: sickcodes/docker-osx:latest
@@ -70,3 +58,15 @@ services:
       - EXTRA=-display none -vnc 0.0.0.0:99
     volumes:
       - "${PWD}/output.env:/env"
+
+  # network-logger:
+  #   image: nicolaka/netshoot  # Prebuilt image with networking tools
+  #   container_name: network-logger
+  #   command: >
+  #     /bin/sh -c "tcpdump -i eth0 -w /traffic/app_traffic.pcap"
+  #   volumes:
+  #     - ./traffic:/traffic
+  #   network_mode: container:proxy
+  #   cap_add:
+  #     - NET_ADMIN
+  #     - NET_RAW
