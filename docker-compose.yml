@@ -1,7 +1,7 @@
-# docker compose -p macos_project up --build
-# docker compose -p macos_project up
-
-# docker compose -p macos_project build --no-cache && docker compose -p macos_project up
+# docker compose -p macos_project up --build -- Run from scratch
+# docker compose -p macos_project up -- Run previously created
+# docker compose -p macos_project build --no-cache proxy -- Recreate proxy
+# docker system prune -- Remove everything
 
 # Steps:
 # clean vds, ubuntu 24.04
