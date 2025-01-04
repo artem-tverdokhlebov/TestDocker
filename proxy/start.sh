@@ -71,7 +71,7 @@ iptables -A OUTPUT -p udp -d 127.0.0.0/8 -j ACCEPT
 iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
 
 # Block all other UDP traffic to the internet (dynamic port range and beyond)
-iptables -A OUTPUT -p udp -d 0.0.0.0/0 --dport 49152:65535 -j DROP
+iptables -A OUTPUT -p udp -d 0.0.0.0/0 --dport 1024:65535 -j DROP
 
 # DNS
 
