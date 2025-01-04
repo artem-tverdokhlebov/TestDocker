@@ -59,7 +59,8 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 iptables -t nat -A OUTPUT -p udp -d 1.1.1.1 --dport 53 -j RETURN
 
 # Drop all other outbound UDP traffic
-# iptables -A OUTPUT -p udp -j DROP
+iptables -A OUTPUT -p udp -j LOG --log-prefix "DROPPED UDP: "
+iptables -A OUTPUT -p udp -j DROP
 
 # DNS
 
