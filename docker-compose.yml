@@ -15,8 +15,6 @@ services:
     build: ./proxy
     container_name: proxy
     privileged: true
-    devices:
-      - "/dev/kmsg:/dev/kmsg"
     ports:
       - "50922:10022"
       - "5999:5999"
@@ -32,6 +30,14 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  scope:
+    image: weaveworks/scope
+    container_name: weave-scope
+    privileged: true
+    network_mode: container:proxy
+    command: >
+      /weave-scope-agent --probe.docker
 
   dnsleaktest:
     image: python:alpine

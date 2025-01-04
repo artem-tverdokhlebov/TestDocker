@@ -82,4 +82,4 @@ EOF
 # Signal that redsocks is ready
 echo "redsocks ready" > /tmp/redsocks_ready
 
-exec dmesg --follow | grep --line-buffered "IPTables"
+exec tail -f /dev/null
