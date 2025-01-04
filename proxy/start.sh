@@ -56,7 +56,7 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
 # Allow DNS traffic (UDP port 53)
-iptables -A OUTPUT -d 1.1.1.1 -p udp --dport 53 -j ACCEPT
+iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 
 # Block STUN/TURN servers
 iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
