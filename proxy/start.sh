@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 set -ex
 
+modprobe nf_log_ipv4
+echo "nf_log_ipv4" >> /etc/modules
+
 PROXY_IP=${PROXY_IP:-127.0.0.1}
 PROXY_PORT=${PROXY_PORT:-12345}
 
@@ -56,7 +59,7 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
 # Block and log UDP traffic
-iptables -A OUTPUT -p udp -j LOG --log-prefix "BLOCKED UDP: " --log-level 4
+iptables -A OUTPUT -p udp -j NFLOG --nflog-prefix "BLOCKED UDP: " --nflog-group 0
 iptables -A OUTPUT -p udp -j DROP
 
 # DNS
