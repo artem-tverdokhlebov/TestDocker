@@ -58,8 +58,8 @@ services:
       - EXTRA=-display none -vnc 0.0.0.0:99
       - CPU=Haswell-noTSX
       - CPUID_FLAGS=kvm=on,vendor=GenuineIntel,+invtsc,vmware-cpuid-freq=on
-    volumes:
-      - "${PWD}/output.env:/env"
+    # volumes:
+    #   - "${PWD}/output.env:/env"
 
   # network-logger:
   #   image: nicolaka/netshoot  # Prebuilt image with networking tools
