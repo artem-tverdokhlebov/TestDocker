@@ -58,6 +58,9 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 # Allow DNS traffic (UDP port 53)
 iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 
+# Allow DNS responses from the server (incoming)
+iptables -A INPUT -p udp --sport 53 -j ACCEPT
+
 # Block STUN/TURN servers
 iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
 
