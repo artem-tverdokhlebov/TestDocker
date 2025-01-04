@@ -87,4 +87,4 @@ echo "redsocks ready" > /tmp/redsocks_ready
 (while true; do dmesg --follow | grep --line-buffered "BLOCKED UDP"; done) &
 
 # Keep container alive
-exec tail -f /var/log/iptables.log /dev/null
+exec tail -f /dev/null
