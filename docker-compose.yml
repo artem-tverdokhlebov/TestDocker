@@ -55,3 +55,9 @@ services:
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=ventura
       - EXTRA=-display none -vnc 0.0.0.0:99
+    volumes:
+      - macos-data:/home/arch/OSX-KVM
+
+volumes:
+  macos-data:
+    driver: local
