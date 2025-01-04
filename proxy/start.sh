@@ -49,8 +49,8 @@ iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
 iptables -t nat -A OUTPUT -o lo -j RETURN
 
 # Exclude traffic for SSH (port 50922) and VNC (port 5999)
-iptables -t nat -A OUTPUT -p tcp --dport 10022 -j RETURN  # Internal SSH port
-iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
+iptables -t nat -A OUTPUT -p tcp --dport 10022 -j RETURN
+iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN
 
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
@@ -64,11 +64,8 @@ iptables -A OUTPUT -p udp --dport 5353 -j ACCEPT
 # Allow multicast traffic (224.0.0.0/4)
 iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j ACCEPT
 
-# Allow traffic to local networks (loopback, private IP ranges)
+# Allow traffic to loopback
 iptables -A OUTPUT -p udp -d 127.0.0.0/8 -j ACCEPT
-# iptables -A OUTPUT -p udp -d 10.0.0.0/8 -j ACCEPT
-# iptables -A OUTPUT -p udp -d 172.16.0.0/12 -j ACCEPT
-# iptables -A OUTPUT -p udp -d 192.168.0.0/16 -j ACCEPT
 
 # Block STUN/TURN servers (common internet UDP services)
 iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
