@@ -59,6 +59,14 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 iptables -A OUTPUT -p udp -j LOG --log-prefix "BLOCKED UDP: " --log-level 4
 iptables -A OUTPUT -p udp -j DROP
 
+# Configure rsyslog for iptables logging
+cat <<EOF > /etc/rsyslog.d/20-iptables.conf
+:msg, contains, "BLOCKED UDP: " -/var/log/iptables.log
+& stop
+EOF
+touch /var/log/iptables.log
+service rsyslog restart
+
 # DNS
 
 # DNSDIST CONFIGURATION
