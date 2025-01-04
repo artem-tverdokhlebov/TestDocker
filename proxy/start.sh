@@ -40,17 +40,17 @@ redsocks -c /etc/redsocks.conf &
 sleep 2
 
 # Exclude traffic destined for the redsocks port (12345)
-iptables -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
+iptables -t nat -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
 
 # Exclude traffic to the external SOCKS proxy (prevent looping)
-iptables -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
+iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
 
 # Exclude loopback traffic in general
-iptables -A OUTPUT -o lo -j RETURN
+iptables -t nat -A OUTPUT -o lo -j RETURN
 
 # Exclude traffic for SSH (port 50922) and VNC (port 5999)
-iptables -A OUTPUT -p tcp --dport 10022 -j RETURN
-iptables -A OUTPUT -p tcp --dport 5900 -j RETURN
+iptables -t nat -A OUTPUT -p tcp --dport 10022 -j RETURN
+iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN
 
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
