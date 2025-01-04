@@ -73,6 +73,11 @@ iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
 # Block all other UDP traffic to the internet (dynamic port range and beyond)
 iptables -A OUTPUT -p udp -d 0.0.0.0/0 --dport 1024:65535 -j DROP
 
+# Drop all IPv6 traffic
+ip6tables -P INPUT DROP
+ip6tables -P FORWARD DROP
+ip6tables -P OUTPUT DROP
+
 # DNS
 
 # DNSDIST CONFIGURATION
