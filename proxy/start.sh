@@ -1,9 +1,6 @@
 #!/usr/bin/env bash
 set -ex
 
-modprobe nf_log_ipv4
-echo "nf_log_ipv4" >> /etc/modules
-
 PROXY_IP=${PROXY_IP:-127.0.0.1}
 PROXY_PORT=${PROXY_PORT:-12345}
 
