@@ -35,6 +35,9 @@ redsocks {
 }
 EOF
 
+# Install rsyslog if not present
+apt-get update && apt-get install -y rsyslog
+
 # Start redsocks in the background
 redsocks -c /etc/redsocks.conf &
 sleep 2
@@ -58,9 +61,6 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 # Block and log UDP traffic
 iptables -A OUTPUT -p udp -j LOG --log-prefix "BLOCKED UDP: " --log-level 4
 iptables -A OUTPUT -p udp -j DROP
-
-# Install rsyslog if not present
-apt-get update && apt-get install -y rsyslog
 
 # Ensure the rsyslog directory exists
 mkdir -p /etc/rsyslog.d
