@@ -58,9 +58,6 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 # Block STUN/TURN servers
 iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
 
-# Block general UDP traffic in the dynamic port range
-iptables -A OUTPUT -p udp --dport 1024:65535 -j DROP
-
 # DNS
 
 # DNSDIST CONFIGURATION
