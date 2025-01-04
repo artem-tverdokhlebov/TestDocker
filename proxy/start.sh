@@ -35,9 +35,6 @@ redsocks {
 }
 EOF
 
-# Install rsyslog if not present
-apt-get update && apt-get install -y rsyslog
-
 # Start redsocks in the background
 redsocks -c /etc/redsocks.conf &
 sleep 2
@@ -62,21 +59,6 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 iptables -A OUTPUT -p udp -j LOG --log-prefix "BLOCKED UDP: " --log-level 4
 iptables -A OUTPUT -p udp -j DROP
 
-# Ensure the rsyslog directory exists
-mkdir -p /etc/rsyslog.d
-
-# Configure rsyslog for iptables logging
-cat <<EOF > /etc/rsyslog.d/20-iptables.conf
-:msg, contains, "BLOCKED UDP: " -/var/log/iptables.log
-& stop
-EOF
-
-# Ensure log file exists
-touch /var/log/iptables.log
-
-# Restart rsyslog to apply changes
-service rsyslog restart
-
 # DNS
 
 # DNSDIST CONFIGURATION
@@ -100,6 +82,9 @@ EOF
 
 # Signal that redsocks is ready
 echo "redsocks ready" > /tmp/redsocks_ready
+
+# Start a background process to stream kernel logs
+(while true; do dmesg --follow | grep --line-buffered "BLOCKED UDP"; done) &
 
 # Keep container alive
 exec tail -f /var/log/iptables.log /dev/null
