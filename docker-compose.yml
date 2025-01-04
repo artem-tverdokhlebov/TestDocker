@@ -31,13 +31,17 @@ services:
       retries: 5
       start_period: 10s
 
-  scope:
-    image: weaveworks/scope
-    container_name: weave-scope
-    privileged: true
-    network_mode: container:proxy
+  network-logger:
+    image: nicolaka/netshoot  # Prebuilt image with networking tools
+    container_name: network-logger
     command: >
-      /weave-scope-agent --probe.docker
+      /bin/sh -c "tcpdump -i eth0 -w /traffic/app_traffic.pcap"
+    volumes:
+      - ./traffic:/traffic
+    network_mode: container:proxy
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
 
   dnsleaktest:
     image: python:alpine
