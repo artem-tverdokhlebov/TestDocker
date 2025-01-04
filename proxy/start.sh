@@ -82,5 +82,4 @@ EOF
 # Signal that redsocks is ready
 echo "redsocks ready" > /tmp/redsocks_ready
 
-# Keep container alive
-exec (while true; do dmesg --follow | grep --line-buffered "IPTables"; done)
+exec tail -F /var/log/kern.log | grep --line-buffered "IPTables"
