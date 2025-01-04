@@ -59,8 +59,7 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
 # Block and log UDP traffic
-iptables -A OUTPUT -p udp -j NFLOG --nflog-prefix "BLOCKED UDP: " --nflog-group 0
-iptables -A OUTPUT -p udp -j DROP
+iptables -A INPUT -j LOG --log-prefix "IPTables: "
 
 # DNS
 
@@ -86,8 +85,5 @@ EOF
 # Signal that redsocks is ready
 echo "redsocks ready" > /tmp/redsocks_ready
 
-# Start a background process to stream kernel logs
-(while true; do dmesg --follow | grep --line-buffered "BLOCKED UDP"; done) &
-
 # Keep container alive
-exec tail -f /dev/null
+exec (while true; do dmesg --follow | grep --line-buffered "IPTables"; done)
