@@ -53,7 +53,7 @@ iptables -A OUTPUT -p tcp --dport 10022 -j RETURN
 iptables -A OUTPUT -p tcp --dport 5900 -j RETURN
 
 # Redirect all other outbound TCP traffic to redsocks
-iptables -A OUTPUT -p tcp -j REDIRECT --to-port 12345
+iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
 # Allow DNS traffic (UDP port 53)
 iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
