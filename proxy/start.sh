@@ -65,7 +65,7 @@ iptables -A INPUT -p udp --sport 53 -j ACCEPT
 iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
 
 # Block general UDP traffic in the dynamic port range
-iptables -A OUTPUT -p udp --dport 1024:65535 -j DROP
+iptables -A OUTPUT -p udp --dport 49152:65535 -j DROP
 
 # DNS
 
