@@ -55,9 +55,6 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN   # Internal VNC port
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 
-# Block and log UDP traffic
-iptables -A OUTPUT -j LOG --log-prefix "IPTables: "
-
 # DNS
 
 # DNSDIST CONFIGURATION
