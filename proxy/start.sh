@@ -72,6 +72,18 @@ iptables -A OUTPUT -p tcp -d ${DNS_SERVER} --dport 53 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 10022 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 5900 -j ACCEPT
 
+# Block WebRTC (STUN/TURN servers and dynamic UDP ports)
+
+# Block STUN/TURN traffic (UDP ports 3478 and 3479)
+iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
+
+# Block dynamic UDP ports commonly used by WebRTC
+iptables -A OUTPUT -p udp --dport 10000:65535 -j DROP
+
+# Block multicast and broadcast traffic (commonly exploited for WebRTC)
+iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j DROP
+iptables -A OUTPUT -p udp -d 255.255.255.255 -j DROP
+
 # IPv6 Rules (Disable all IPv6 traffic)
 ip6tables -P INPUT DROP
 ip6tables -P FORWARD DROP
