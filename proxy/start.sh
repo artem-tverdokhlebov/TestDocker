@@ -74,7 +74,7 @@ iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
 iptables -A OUTPUT -p udp -d 0.0.0.0/0 --dport 1024:65535 -j DROP
 
 # Block all non-matching traffic
-iptables -t nat -A OUTPUT -j DROP
+iptables -A OUTPUT -j DROP
 
 # Drop all IPv6 traffic
 ip6tables -P INPUT DROP
