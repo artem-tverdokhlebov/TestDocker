@@ -84,6 +84,9 @@ iptables -A OUTPUT -p udp --dport 10000:65535 -j DROP
 iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j DROP
 iptables -A OUTPUT -p udp -d 255.255.255.255 -j DROP
 
+# Block all other UDP traffic (default deny for UDP)
+iptables -A OUTPUT -p udp -j DROP
+
 # IPv6 Rules (Disable all IPv6 traffic)
 ip6tables -P INPUT DROP
 ip6tables -P FORWARD DROP
