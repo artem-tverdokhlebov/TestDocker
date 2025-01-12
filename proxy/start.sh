@@ -58,20 +58,6 @@ iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN
 # Redirect all other outbound TCP traffic to redsocks
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port ${REDSOCKS_PORT}
 
-# Filter Table Rules (for general packet filtering)
-
-# Allow DNS requests to localhost:53
-iptables -A OUTPUT -p udp -d 127.0.0.1 --dport 53 -j ACCEPT
-iptables -A OUTPUT -p tcp -d 127.0.0.1 --dport 53 -j ACCEPT
-
-# Allow DNS requests to 1.1.1.1 (proxied through redsocks)
-iptables -A OUTPUT -p udp -d ${DNS_SERVER} --dport 53 -j ACCEPT
-iptables -A OUTPUT -p tcp -d ${DNS_SERVER} --dport 53 -j ACCEPT
-
-# Allow traffic on 10022 and 5900
-iptables -A OUTPUT -p tcp --dport 10022 -j ACCEPT
-iptables -A OUTPUT -p tcp --dport 5900 -j ACCEPT
-
 # IPv6 Rules (Disable all IPv6 traffic)
 ip6tables -P INPUT DROP
 ip6tables -P FORWARD DROP
