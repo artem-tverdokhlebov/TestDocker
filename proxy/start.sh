@@ -59,13 +59,13 @@ iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
 iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
 
 # Allow multicast DNS (mDNS) traffic (UDP port 5353)
-iptables -A OUTPUT -p udp --dport 5353 -j ACCEPT
+# iptables -A OUTPUT -p udp --dport 5353 -j ACCEPT
 
 # Allow multicast traffic (224.0.0.0/4)
-iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j ACCEPT
+# iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j ACCEPT
 
 # Allow traffic to loopback
-iptables -A OUTPUT -p udp -d 127.0.0.0/8 -j ACCEPT
+# iptables -A OUTPUT -p udp -d 127.0.0.0/8 -j ACCEPT
 
 # Block STUN/TURN servers (common internet UDP services)
 # iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
