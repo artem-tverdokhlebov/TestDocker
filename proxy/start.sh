@@ -72,9 +72,6 @@ iptables -A OUTPUT -p tcp -d ${DNS_SERVER} --dport 53 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 10022 -j ACCEPT
 iptables -A OUTPUT -p tcp --dport 5900 -j ACCEPT
 
-# Block all other UDP traffic (default deny for UDP)
-iptables -A OUTPUT -p udp -j DROP
-
 # IPv6 Rules (Disable all IPv6 traffic)
 ip6tables -P INPUT DROP
 ip6tables -P FORWARD DROP
