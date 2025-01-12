@@ -68,10 +68,10 @@ iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j ACCEPT
 iptables -A OUTPUT -p udp -d 127.0.0.0/8 -j ACCEPT
 
 # Block STUN/TURN servers (common internet UDP services)
-iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
+# iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
 
 # Block all other UDP traffic to the internet (dynamic port range and beyond)
-iptables -A OUTPUT -p udp -d 0.0.0.0/0 --dport 1024:65535 -j DROP
+# iptables -A OUTPUT -p udp -d 0.0.0.0/0 --dport 1024:65535 -j DROP
 
 # Drop all IPv6 traffic
 ip6tables -P INPUT DROP
