@@ -9,6 +9,8 @@ DNS_PORT=${DNS_PORT:-53}
 
 LISTEN_ADDRESS=${LISTEN_ADDRESS:-127.0.0.1}
 
+REDSOCKS_PORT=12345
+
 DELAY=${DELAY:-1800}
 
 echo "Delaying proxy start by ${DELAY} seconds..."
@@ -26,7 +28,7 @@ base {
 
 redsocks {
   local_ip = 127.0.0.1;
-  local_port = 12345;
+  local_port = ${REDSOCKS_PORT};
   ip = ${PROXY_IP};
   port = ${PROXY_PORT};
   type = socks5;
@@ -39,41 +41,38 @@ EOF
 redsocks -c /etc/redsocks.conf &
 sleep 2
 
-# Exclude traffic destined for the redsocks port (12345)
-iptables -t nat -A OUTPUT -o lo -p tcp --dport 12345 -j RETURN
+# Exclude traffic destined for the redsocks port itself
+iptables -t nat -A OUTPUT -o lo -p tcp --dport ${REDSOCKS_PORT} -j RETURN
 
-# Exclude traffic to the external SOCKS proxy (prevent looping)
+# Exclude traffic to the SOCKS proxy (to avoid infinite loop)
 iptables -t nat -A OUTPUT -d ${PROXY_IP} -p tcp --dport ${PROXY_PORT} -j RETURN
 
-# Exclude loopback traffic in general
-iptables -t nat -A OUTPUT -o lo -j RETURN
+# Exclude traffic to localhost:53 (DNS)
+iptables -t nat -A OUTPUT -p udp -d 127.0.0.1 --dport 53 -j RETURN
+iptables -t nat -A OUTPUT -p tcp -d 127.0.0.1 --dport 53 -j RETURN
 
-# Exclude traffic for SSH (port 50922) and VNC (port 5999)
+# Exclude specific ports: 10022 (SSH) and 5900 (VNC)
 iptables -t nat -A OUTPUT -p tcp --dport 10022 -j RETURN
 iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN
 
 # Redirect all other outbound TCP traffic to redsocks
-iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port 12345
+iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port ${REDSOCKS_PORT}
 
-# Allow DNS traffic (UDP port 53)
-iptables -A OUTPUT -p udp --dport 53 -j ACCEPT
+# Filter Table Rules (for general packet filtering)
 
-# Allow multicast DNS (mDNS) traffic (UDP port 5353)
-# iptables -A OUTPUT -p udp --dport 5353 -j ACCEPT
+# Allow DNS requests to localhost:53
+iptables -A OUTPUT -p udp -d 127.0.0.1 --dport 53 -j ACCEPT
+iptables -A OUTPUT -p tcp -d 127.0.0.1 --dport 53 -j ACCEPT
 
-# Allow multicast traffic (224.0.0.0/4)
-# iptables -A OUTPUT -p udp -d 224.0.0.0/4 -j ACCEPT
+# Allow DNS requests to 1.1.1.1 (proxied through redsocks)
+iptables -A OUTPUT -p udp -d ${DNS_SERVER} --dport 53 -j ACCEPT
+iptables -A OUTPUT -p tcp -d ${DNS_SERVER} --dport 53 -j ACCEPT
 
-# Allow traffic to loopback
-# iptables -A OUTPUT -p udp -d 127.0.0.0/8 -j ACCEPT
+# Allow traffic on 10022 and 5900
+iptables -A OUTPUT -p tcp --dport 10022 -j ACCEPT
+iptables -A OUTPUT -p tcp --dport 5900 -j ACCEPT
 
-# Block STUN/TURN servers (common internet UDP services)
-# iptables -A OUTPUT -p udp --dport 3478:3479 -j DROP
-
-# Block all other UDP traffic to the internet (dynamic port range and beyond)
-# iptables -A OUTPUT -p udp -d 0.0.0.0/0 --dport 1024:65535 -j DROP
-
-# Drop all IPv6 traffic
+# IPv6 Rules (Disable all IPv6 traffic)
 ip6tables -P INPUT DROP
 ip6tables -P FORWARD DROP
 ip6tables -P OUTPUT DROP
