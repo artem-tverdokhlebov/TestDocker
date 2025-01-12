@@ -16,8 +16,8 @@ DELAY=${DELAY:-1800}
 echo "Delaying proxy start by ${DELAY} seconds..."
 sleep "${DELAY}"
 
-# Generate redsocks.conf dynamically
-cat <<EOF > /etc/redsocks.conf
+# Generate redsocks2.conf dynamically
+cat <<EOF > /etc/redsocks2.conf
 base {
   log_debug = off;
   log_info = off;
@@ -37,8 +37,8 @@ redsocks {
 }
 EOF
 
-# Start redsocks in the background
-redsocks -c /etc/redsocks.conf &
+# Start redsocks2 in the background
+redsocks2 -c /etc/redsocks2.conf &
 sleep 2
 
 # Exclude traffic destined for the redsocks port itself
@@ -85,6 +85,6 @@ nameserver ${LISTEN_ADDRESS}
 EOF
 
 # Signal that redsocks is ready
-echo "redsocks ready" > /tmp/redsocks_ready
+echo "redsocks2 ready" > /tmp/redsocks_ready
 
 exec tail -f /dev/null
