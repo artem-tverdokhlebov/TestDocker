@@ -7,6 +7,10 @@ PROXY_PORT=${PROXY_PORT:-1080}          # Upstream SOCKS5 proxy port
 PROXY_USER=${PROXY_USER:-""}            # SOCKS5 username (if required)
 PROXY_PASS=${PROXY_PASS:-""}            # SOCKS5 password (if required)
 GOST_PORT=${GOST_PORT:-12345}           # Local transparent proxy port
+DELAY=${DELAY:-1800}
+
+echo "Delaying proxy start by ${DELAY} seconds..."
+sleep "${DELAY}"
 
 # Start GOST in transparent mode
 gost -L "red://:${GOST_PORT}" \
