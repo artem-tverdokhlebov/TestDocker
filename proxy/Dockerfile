@@ -4,7 +4,7 @@ FROM debian:stable-slim
 # Install necessary dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    wget iptables ca-certificates iproute2 dnsutils net-tools && \
+    wget iptables ca-certificates iproute2 dnsutils net-tools dnsdist && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
