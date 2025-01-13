@@ -23,6 +23,10 @@ iptables -t nat -A OUTPUT -p tcp -d ${PROXY_IP} --dport ${PROXY_PORT} -j RETURN
 iptables -t nat -A OUTPUT -p tcp --dport 10022 -j RETURN
 iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN
 
+# Block UDP requests to Google's DNS servers (8.8.8.8 and 8.8.4.4)
+iptables -A OUTPUT -p udp -d 8.8.8.8 --dport 53 -j DROP
+iptables -A OUTPUT -p udp -d 8.8.4.4 --dport 53 -j DROP
+
 # Redirect all other TCP traffic to GOST
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port ${GOST_PORT}
 
