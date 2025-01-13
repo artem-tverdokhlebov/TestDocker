@@ -19,6 +19,10 @@ gost -L "red://:${GOST_PORT}" \
 # Exclude traffic to the SOCKS5 proxy from redirection
 iptables -t nat -A OUTPUT -p tcp -d ${PROXY_IP} --dport ${PROXY_PORT} -j RETURN
 
+# Exclude specific ports (10022 and 5900) from redirection
+iptables -t nat -A OUTPUT -p tcp --dport 10022 -j RETURN
+iptables -t nat -A OUTPUT -p tcp --dport 5900 -j RETURN
+
 # Redirect all other TCP traffic to GOST
 iptables -t nat -A OUTPUT -p tcp -j REDIRECT --to-port ${GOST_PORT}
 
