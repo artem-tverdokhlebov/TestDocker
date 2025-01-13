@@ -18,7 +18,7 @@ sleep "${DELAY}"
 
 # Start gost for SOCKS5 proxying and DNS UDP-to-TCP forwarding
 # Proxy TCP traffic
-gost -L "tcp://${LISTEN_ADDRESS}:${GOST_PORT}" -F "socks5://${PROXY_IP}:${PROXY_PORT}" &
+gost -L "tcp://${LISTEN_ADDRESS}:${GOST_PORT}" -F "socks5://${PROXY_USER}:${PROXY_PASS}@${PROXY_IP}:${PROXY_PORT}" &
 # Proxy DNS traffic over TCP
 gost -L "udp://${LISTEN_ADDRESS}:${DNS_PORT}" -F "tcp://${DNS_SERVER}:${DNS_PORT}" &
 sleep 2
