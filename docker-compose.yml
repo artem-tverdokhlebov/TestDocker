@@ -10,6 +10,10 @@
 # clone repo, create .env from .env.example
 # run "docker compose -p macos_project up --build"
 
+networks:
+  custom-network:
+    driver: bridge
+
 services:
   wireguard:
     image: linuxserver/wireguard
@@ -38,11 +42,14 @@ services:
       retries: 3
       start_period: 10s
     restart: unless-stopped
+    networks:
+      - custom-network
 
   checkip:
     image: curlimages/curl:latest
     container_name: checkip
-    network_mode: container:wireguard
+    networks:
+      - custom-network
     depends_on:
       wireguard:
         condition: service_healthy
@@ -53,19 +60,12 @@ services:
   vnc-test:
     image: consol/rocky-xfce-vnc
     container_name: vnc-test
-    network_mode: container:wireguard
+    networks:
+      - custom-network
+    ports:
+      - "5901:5901"  # Expose VNC to the host
     environment:
       - VNC_PASSWORD=testpassword  # Set a VNC password
-    restart: unless-stopped
-
-  proxy-vnc:
-    image: alpine/socat
-    container_name: proxy-vnc
-    network_mode: container:wireguard  # Share network stack with wireguard
-    depends_on:
-      - vnc-test
-    command: >
-      tcp-listen:5901,reuseaddr,fork tcp-connect:vnc-test:5901
     restart: unless-stopped
 
   # dnsleaktest:
