@@ -1,7 +1,13 @@
 #!/bin/bash
-# Custom script to exclude ports from WireGuard tunnel
+# Wait for WireGuard interface (wg0) to be ready
+echo "Waiting for WireGuard to initialize..."
 
-echo "Applying custom iptables rules to exclude specific ports from VPN..."
+# Loop until the WireGuard interface is up
+while ! ip link show wg0 >/dev/null 2>&1; do
+  sleep 1
+done
+
+echo "WireGuard interface wg0 is ready. Applying custom iptables rules..."
 
 # Exclude traffic to container port 10022 (mapped to host port 50922)
 iptables -t mangle -A OUTPUT -p tcp --dport 10022 -j MARK --set-mark 1
