@@ -20,8 +20,6 @@ services:
       - SYS_MODULE
     devices:
       - /dev/net/tun
-    ports:
-      - "5901:5901" # Expose port 5999 on the host
     environment:
       - PUID=1000
       - PGID=1000
