@@ -29,7 +29,7 @@ services:
     volumes:
       - ./wireguard:/config
       - ./setup-iptables.sh:/setup-iptables.sh
-    entrypoint: ["/bin/bash", "-c", "/setup-iptables.sh && /init"]
+    entrypoint: ["/bin/bash", "-c", "chmod +x /setup-iptables.sh && /setup-iptables.sh && /init"]
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     healthcheck:
