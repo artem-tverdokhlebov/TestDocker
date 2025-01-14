@@ -28,7 +28,7 @@ services:
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     healthcheck:
-      test: ["CMD", "pgrep", "wireguard"]
+      test: ["CMD", "wg", "show"]
       interval: 10s
       timeout: 5s
       retries: 3
