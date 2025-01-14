@@ -1,8 +1,6 @@
 #!/bin/bash
 
-while ! ip link show wg0 >/dev/null 2>&1; do
-  sleep 1
-done
+sleep 10
 
 # Enable IP forwarding
 sysctl -w net.ipv4.ip_forward=1
