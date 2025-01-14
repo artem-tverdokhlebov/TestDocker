@@ -11,73 +11,53 @@
 # run "docker compose -p macos_project up --build"
 
 services:
-  proxy:
-    build: ./proxy
-    container_name: proxy
-    privileged: true
-    ports:
-      - "50922:10022"
-      - "5999:5999"
-    environment:
-      PROXY_IP: ${PROXY_IP}
-      PROXY_PORT: ${PROXY_PORT}
-      PROXY_USER: ${PROXY_USER}
-      PROXY_PASS: ${PROXY_PASS}
-      DELAY: ${DELAY}
-    healthcheck:
-      test: ["CMD", "cat", "/tmp/proxy_ready"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
-      start_period: 10s
-
-  # checkip:
-  #   image: curlimages/curl:latest
-  #   container_name: checkip
-  #   depends_on:
-  #     proxy:
-  #       condition: service_healthy
-  #   network_mode: container:proxy
-  #   entrypoint: >
-  #     sh -c "
-  #     curl -s http://ifconfig.me && echo"
-
-  # dnsleaktest:
-  #   image: python:alpine
-  #   container_name: dnsleaktest
-  #   depends_on:
-  #     proxy:
-  #       condition: service_healthy
-  #   network_mode: container:proxy
-  #   entrypoint: >
-  #     sh -c "
-  #     wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
-
-  macos:
-    image: sickcodes/docker-osx:latest
-    container_name: macos-13
-    privileged: true
-    network_mode: container:proxy
+  wireguard:
+    image: linuxserver/wireguard
+    container_name: wireguard
+    cap_add:
+      - NET_ADMIN
+      - SYS_MODULE
     devices:
-      - "/dev/kvm:/dev/kvm"
+      - /dev/net/tun
     environment:
-      - RAM=16
-      - GENERATE_UNIQUE=true
-      - DEVICE_MODEL=${DEVICE_MODEL}
-      - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
-      - SHORTNAME=ventura
-      - EXTRA=-display none -vnc 0.0.0.0:99
-    # volumes:
-    #   - "${PWD}/output.env:/env"
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+    volumes:
+      - ./wireguard:/config
+    sysctls:
+      - net.ipv4.conf.all.src_valid_mark=1
+    restart: unless-stopped
 
-  # network-logger:
-  #   image: nicolaka/netshoot  # Prebuilt image with networking tools
-  #   container_name: network-logger
-  #   command: >
-  #     /bin/sh -c "tcpdump -i eth0 -w /traffic/app_traffic.pcap"
-  #   volumes:
-  #     - ./traffic:/traffic
+  checkip:
+    image: curlimages/curl:latest
+    container_name: checkip
+    network_mode: container:wireguard
+    entrypoint: >
+      sh -c "
+      curl -s http://ifconfig.me && echo"
+
+  dnsleaktest:
+    image: python:alpine
+    container_name: dnsleaktest
+    network_mode: container:wireguard
+    entrypoint: >
+      sh -c "
+      wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
+
+  # macos:
+  #   image: sickcodes/docker-osx:latest
+  #   container_name: macos-13
+  #   privileged: true
   #   network_mode: container:proxy
-  #   cap_add:
-  #     - NET_ADMIN
-  #     - NET_RAW
+  #   devices:
+  #     - "/dev/kvm:/dev/kvm"
+  #   environment:
+  #     - RAM=16
+  #     - GENERATE_UNIQUE=true
+  #     - DEVICE_MODEL=${DEVICE_MODEL}
+  #     - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
+  #     - SHORTNAME=ventura
+  #     - EXTRA=-display none -vnc 0.0.0.0:99
+  #   # volumes:
+  #   #   - "${PWD}/output.env:/env"
