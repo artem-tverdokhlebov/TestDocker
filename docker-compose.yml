@@ -61,6 +61,7 @@ services:
   proxy-vnc:
     image: alpine/socat
     container_name: proxy-vnc
+    network_mode: container:wireguard  # Share network stack with wireguard
     depends_on:
       - vnc-test
     command: >
