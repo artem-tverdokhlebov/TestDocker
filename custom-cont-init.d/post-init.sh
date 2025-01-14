@@ -1,6 +1,6 @@
 #!/bin/bash
 
-sleep 10
+sleep 1
 
 # Apply iptables rules for WireGuard routing
 iptables -t nat -A POSTROUTING -s 172.20.0.0/24 -o wg0 -j MASQUERADE
