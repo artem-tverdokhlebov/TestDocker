@@ -27,12 +27,21 @@ services:
       - ./wireguard:/config
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
+    healthcheck:
+      test: ["CMD", "pgrep", "wireguard"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
     restart: unless-stopped
 
   checkip:
     image: curlimages/curl:latest
     container_name: checkip
     network_mode: container:wireguard
+    depends_on:
+      wireguard:
+        condition: service_healthy
     entrypoint: >
       sh -c "
       curl -s http://ifconfig.me && echo"
@@ -41,6 +50,9 @@ services:
     image: python:alpine
     container_name: dnsleaktest
     network_mode: container:wireguard
+    depends_on:
+      wireguard:
+        condition: service_healthy
     entrypoint: >
       sh -c "
       wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
