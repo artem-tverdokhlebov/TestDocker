@@ -20,6 +20,9 @@ services:
       - SYS_MODULE
     ports:
       - "5999:5901"
+    networks:
+      docker_ext:
+        ipv4_address: 192.168.1.100
     devices:
       - /dev/net/tun
     environment:
@@ -41,24 +44,24 @@ services:
       start_period: 10s
     restart: unless-stopped
 
-  vnc-test:
-    image: consol/rocky-xfce-vnc
-    container_name: vnc-test
-    network_mode: container:wireguard
-    environment:
-      - VNC_PASSWORD=testpassword  # Set a VNC password
-    restart: unless-stopped
-
-  # checkip:
-  #   image: curlimages/curl:latest
-  #   container_name: checkip
+  # vnc-test:
+  #   image: consol/rocky-xfce-vnc
+  #   container_name: vnc-test
   #   network_mode: container:wireguard
-  #   depends_on:
-  #     wireguard:
-  #       condition: service_healthy
-  #   entrypoint: >
-  #     sh -c "
-  #     curl -s http://ifconfig.me && echo"
+  #   environment:
+  #     - VNC_PASSWORD=testpassword  # Set a VNC password
+  #   restart: unless-stopped
+
+  checkip:
+    image: curlimages/curl:latest
+    container_name: checkip
+    network_mode: container:wireguard
+    depends_on:
+      wireguard:
+        condition: service_healthy
+    entrypoint: >
+      sh -c "
+      curl -s http://ifconfig.me && echo"
 
   # dnsleaktest:
   #   image: python:alpine
