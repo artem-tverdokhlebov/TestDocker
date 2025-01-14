@@ -19,7 +19,6 @@ services:
       - NET_ADMIN
       - SYS_MODULE
     ports:
-      - "50922:10022"
       - "5999:5999"
     devices:
       - /dev/net/tun
