@@ -29,8 +29,7 @@ services:
       - TZ=Etc/UTC
     volumes:
       - ./wireguard:/config
-      - ./setup-iptables.sh:/setup-iptables.sh
-    entrypoint: ["/bin/bash", "-c", "/init && chmod +x /setup-iptables.sh && /setup-iptables.sh"]
+      - ./custom-cont-init.d:/etc/cont-init.d
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
     healthcheck:
