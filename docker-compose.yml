@@ -20,9 +20,6 @@ services:
       - SYS_MODULE
     ports:
       - "5999:5901"
-    networks:
-      docker_ext:
-        ipv4_address: 192.168.1.100
     devices:
       - /dev/net/tun
     environment:
