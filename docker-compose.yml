@@ -29,9 +29,9 @@ services:
       - WIREGUARD_ENDPOINT_PORT=51249
       - WIREGUARD_PUBLIC_KEY=Nl00anlFpc371uLu9FBVEnB8iQp/rgACkf6nu+M4Ryo=
       - WIREGUARD_PRESHARED_KEY=3CnHMTrIxRVr7eQh5U6316Yf4/YdoXYoLgE4opUT/zY=
-      - FIREWALL_INPUT_PORTS=5901  # Allow VNC port
+      - FIREWALL_INPUT_PORTS=6079  # Allow VNC port
     ports:
-      - "5901:5901/tcp"  # Expose VNC port
+      - "6079:6079/tcp"  # Expose VNC port
     restart: unless-stopped
 
   checkip:
