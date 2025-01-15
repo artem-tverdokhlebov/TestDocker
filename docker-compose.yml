@@ -47,12 +47,8 @@ services:
     container_name: vnc-test
     network_mode: "service:gluetun"  # Shares Gluetun's network stack
     environment:
-      - VNC_PASSWORD=testpassword  # Set a VNC password
+      - VNC_PASSWORDLESS=true
     restart: unless-stopped
-    entrypoint: >
-      sh -c "
-      vncserver :1 &&
-      socat TCP-LISTEN:5901,fork TCP:localhost:5901"
 
   # dnsleaktest:
   #   image: python:alpine
