@@ -29,4 +29,15 @@ while true; do
 done
 
 echo "VNC server is ready. Launching VNC viewer..."
-vncviewer $VNC_HOST:$VNC_PORT
+vncviewer $VNC_HOST:$VNC_PORT &
+
+# Wait for vncviewer to close
+VNCVIEWER_PID=$!
+wait $VNCVIEWER_PID
+
+echo "VNC viewer closed. Stopping Docker container..."
+
+# Stop and remove containers after VNC viewer is closed
+sudo docker compose -p macos_project down
+
+echo "Docker containers stopped. Exiting script."
