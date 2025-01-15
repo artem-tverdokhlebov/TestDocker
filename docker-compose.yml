@@ -56,3 +56,5 @@ services:
       - SHORTNAME=ventura
       - EXTRA=-vnc 0.0.0.0:99
       - DISPLAY=${DISPLAY:-:0.0}
+      - WIDTH=1920
+      - HEIGHT=1080
