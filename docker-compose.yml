@@ -10,8 +10,6 @@
 # clone repo, create .env from .env.example
 # run "docker compose -p macos_project up --build"
 
-version: '3.8'
-
 services:
   gluetun:
     image: qmcgaw/gluetun
@@ -41,9 +39,6 @@ services:
     network_mode: service:gluetun
     devices:
       - "/dev/kvm:/dev/kvm"
-    depends_on:
-      wireguard:
-        condition: service_healthy
     environment:
       - RAM=16
       - GENERATE_UNIQUE=true
