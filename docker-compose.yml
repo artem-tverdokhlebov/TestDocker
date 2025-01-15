@@ -21,9 +21,13 @@ services:
     environment:
       - VPN_SERVICE_PROVIDER=custom  # Use 'custom' for manual WireGuard configuration
       - VPN_TYPE=wireguard
-      - FIREWALL_INPUT_PORTS=5999  # Allow VNC port
-    volumes:
-      - "${PWD}/wg0.conf:/gluetun/wireguard/wg0.conf"
+      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
+      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
+      - WIREGUARD_ENDPOINT_IP=${WIREGUARD_ENDPOINT_IP}
+      - WIREGUARD_ENDPOINT_PORT=${WIREGUARD_ENDPOINT_PORT}
+      - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
+      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
+      - FIREWALL_INPUT_PORTS=5999
     ports:
       - "5999:5999/tcp"  # Expose VNC port
     restart: unless-stopped
@@ -52,6 +56,3 @@ services:
       - SHORTNAME=ventura
       - EXTRA=-vnc 0.0.0.0:99
       - DISPLAY=${DISPLAY:-:0.0}
-    volumes:
-      - "/tmp/.X11-unix:/tmp/.X11-unix"
-    #   - "${PWD}/output.env:/env"
