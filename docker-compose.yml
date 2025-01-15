@@ -38,7 +38,7 @@ services:
     privileged: true
     network_mode: service:gluetun
     devices:
-      - "/dev/kvm:/dev/kvm"
+      - /dev/kvm
     environment:
       - RAM=16
       - GENERATE_UNIQUE=true
