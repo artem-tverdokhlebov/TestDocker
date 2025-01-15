@@ -31,7 +31,7 @@ services:
       - WIREGUARD_PRESHARED_KEY=3CnHMTrIxRVr7eQh5U6316Yf4/YdoXYoLgE4opUT/zY=
       - FIREWALL_INPUT_PORTS=5901  # Allow VNC port
     ports:
-      - "0.0.0.0:5901:5901/tcp"
+      - "5901:5901/tcp"
     restart: unless-stopped
 
   checkip:
@@ -45,10 +45,14 @@ services:
   vnc-test:
     image: consol/rocky-xfce-vnc
     container_name: vnc-test
-    network_mode: service:gluetun  # Routes through WireGuard
+    network_mode: "service:gluetun"  # Shares Gluetun's network stack
     environment:
       - VNC_PASSWORD=testpassword  # Set a VNC password
     restart: unless-stopped
+    entrypoint: >
+      sh -c "
+      vncserver :1 &&
+      socat TCP-LISTEN:5901,fork TCP:localhost:5901"
 
   # dnsleaktest:
   #   image: python:alpine
