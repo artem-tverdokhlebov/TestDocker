@@ -29,9 +29,9 @@ services:
       - WIREGUARD_ENDPOINT_PORT=51249
       - WIREGUARD_PUBLIC_KEY=Nl00anlFpc371uLu9FBVEnB8iQp/rgACkf6nu+M4Ryo=
       - WIREGUARD_PRESHARED_KEY=3CnHMTrIxRVr7eQh5U6316Yf4/YdoXYoLgE4opUT/zY=
-      - FIREWALL_INPUT_PORTS=80  # Allow VNC port
+      - FIREWALL_INPUT_PORTS=5901  # Allow VNC port
     ports:
-      - "8080:80/tcp"
+      - "5901:5901/tcp"  # Expose VNC port
     restart: unless-stopped
 
   checkip:
@@ -42,11 +42,23 @@ services:
       sh -c "
       curl -s http://ifconfig.me && echo"
 
-  nginx-test:
-    image: nginx:alpine
-    container_name: nginx-test
+  vnc-server:
+    image: dperson/xtightvncserver
+    container_name: vnc-server
     network_mode: "service:gluetun"  # Shares Gluetun's network stack
+    environment:
+      - USER=root
+      - PASSWORD=testpassword  # Set your VNC password
     restart: unless-stopped
+    entrypoint:
+      - sh
+      - -c
+      - >
+        mkdir -p /root/.vnc &&
+        echo "testpassword" | vncpasswd -f > /root/.vnc/passwd &&
+        chmod 600 /root/.vnc/passwd &&
+        vncserver :1 -geometry 1280x1024 -depth 24 &&
+        tail -f /dev/null
 
   # dnsleaktest:
   #   image: python:alpine
