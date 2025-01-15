@@ -31,6 +31,12 @@ services:
     ports:
       - "5999:5999/tcp"  # Expose VNC port
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   macos:
     image: sickcodes/docker-osx:latest
@@ -38,7 +44,8 @@ services:
     privileged: true
     network_mode: service:gluetun  # Use the gluetun network stack
     depends_on:
-      - gluetun  # Ensure gluetun starts first
+      gluetun:
+        condition: service_healthy
     devices:
       - /dev/kvm
     environment:
