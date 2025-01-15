@@ -53,5 +53,5 @@ services:
       - EXTRA=-vnc 0.0.0.0:99
       - DISPLAY=${DISPLAY:-:0.0}
     volumes:
-      - "tmp/.X11-unix:/tmp/.X11-unix"
+      - "/tmp/.X11-unix:/tmp/.X11-unix"
     #   - "${PWD}/output.env:/env"
