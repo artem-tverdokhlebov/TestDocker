@@ -13,40 +13,30 @@
 version: '3.8'
 
 services:
-  wireguard:
-    image: linuxserver/wireguard
-    container_name: wireguard
-    privileged: true
+  gluetun:
+    image: qmcgaw/gluetun
+    container_name: gluetun
     cap_add:
       - NET_ADMIN
-      - SYS_MODULE
     devices:
       - /dev/net/tun
     environment:
-      - PUID=1000
-      - PGID=1000
-      - TZ=Etc/UTC
-    volumes:
-      - ./wireguard:/config
-      - ./custom-cont-init.d:/etc/cont-init.d
-    sysctls:
-      - net.ipv4.conf.all.src_valid_mark=1
-      - net.ipv4.ip_forward=1
-    healthcheck:
-      test: ["CMD", "wg", "show"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 10s
+      - VPN_SERVICE_PROVIDER=custom  # Use 'custom' for manual WireGuard configuration
+      - VPN_TYPE=wireguard
+      - WIREGUARD_PRIVATE_KEY=gFu2QeeoHLfAb5JI0QCwVTJWdeCDD+4sk9J0XvHNKFs=
+      - WIREGUARD_ADDRESSES=10.66.66.2/32,fd42:42:42::2/128
+      - WIREGUARD_ENDPOINT=217.30.10.70:51249
+      - WIREGUARD_PUBLIC_KEY=Nl00anlFpc371uLu9FBVEnB8iQp/rgACkf6nu+M4Ryo=
+      - WIREGUARD_PRESHARED_KEY=3CnHMTrIxRVr7eQh5U6316Yf4/YdoXYoLgE4opUT/zY=
+      - FIREWALL_INPUT_PORTS=5901  # Allow VNC port
+    ports:
+      - "5901:5901"  # Expose the VNC port
     restart: unless-stopped
 
   checkip:
     image: curlimages/curl:latest
     container_name: checkip
-    network_mode: service:wireguard
-    depends_on:
-      wireguard:
-        condition: service_healthy
+    network_mode: service:gluetun
     entrypoint: >
       sh -c "
       curl -s http://ifconfig.me && echo"
@@ -54,26 +44,10 @@ services:
   vnc-test:
     image: consol/rocky-xfce-vnc
     container_name: vnc-test
-    network_mode: service:wireguard
+    network_mode: service:gluetun  # Routes through WireGuard
     environment:
       - VNC_PASSWORD=testpassword  # Set a VNC password
     restart: unless-stopped
-
-  vnc-proxy:
-    image: alpine/socat
-    container_name: vnc-proxy
-    command: tcp-listen:5902,fork,reuseaddr tcp-connect:host.docker.internal:5901
-    networks:
-      - bypass_wireguard
-    ports:
-      - "5902:5902"
-    depends_on:
-      - vnc-test
-    restart: unless-stopped
-
-networks:
-  bypass_wireguard:
-    driver: bridge
 
   # dnsleaktest:
   #   image: python:alpine
