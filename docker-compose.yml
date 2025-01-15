@@ -10,6 +10,8 @@
 # clone repo, create .env from .env.example
 # run "docker compose -p macos_project up --build"
 
+version: '3.8'
+
 services:
   wireguard:
     image: linuxserver/wireguard
@@ -24,15 +26,12 @@ services:
       - PUID=1000
       - PGID=1000
       - TZ=Etc/UTC
-    ports:
-      - "5901:5901"
     volumes:
       - ./wireguard:/config
       - ./custom-cont-init.d:/etc/cont-init.d
     sysctls:
       - net.ipv4.conf.all.src_valid_mark=1
       - net.ipv4.ip_forward=1
-      - net.ipv4.conf.all.proxy_arp=1
     healthcheck:
       test: ["CMD", "wg", "show"]
       interval: 10s
@@ -59,6 +58,22 @@ services:
     environment:
       - VNC_PASSWORD=testpassword  # Set a VNC password
     restart: unless-stopped
+
+  vnc-proxy:
+    image: alpine/socat
+    container_name: vnc-proxy
+    command: tcp-listen:5902,fork,reuseaddr tcp-connect:vnc-test:5900
+    networks:
+      - bypass_wireguard
+    ports:
+      - "5902:5902"
+    depends_on:
+      - vnc-test
+    restart: unless-stopped
+
+networks:
+  bypass_wireguard:
+    driver: bridge
 
   # dnsleaktest:
   #   image: python:alpine
