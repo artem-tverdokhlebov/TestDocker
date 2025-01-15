@@ -16,15 +16,15 @@ echo "Checking if VNC server is fully operational on $VNC_HOST:$VNC_PORT..."
 
 while true; do
     # Try connecting to the VNC server and read the response
-    RESPONSE=$(echo -n | nc $VNC_HOST $VNC_PORT)
+    RESPONSE=$(echo | timeout 2 nc $VNC_HOST $VNC_PORT 2>/dev/null)
 
     # Check if the response contains the expected VNC handshake (RFB protocol)
-    if [[ $RESPONSE == RFB* ]]; then
+    if [[ $RESPONSE =~ ^RFB ]]; then
         echo "VNC server is fully operational! Handshake response: $RESPONSE"
         break
     else
-        echo "VNC server not ready yet. Retrying in 1 second..."
-        sleep 1
+        echo "VNC server not ready yet. Retrying in 5 second..."
+        sleep 5
     fi
 done
 
