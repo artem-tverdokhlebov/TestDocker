@@ -29,55 +29,27 @@ services:
       - WIREGUARD_ENDPOINT_PORT=51249
       - WIREGUARD_PUBLIC_KEY=Nl00anlFpc371uLu9FBVEnB8iQp/rgACkf6nu+M4Ryo=
       - WIREGUARD_PRESHARED_KEY=3CnHMTrIxRVr7eQh5U6316Yf4/YdoXYoLgE4opUT/zY=
-      - FIREWALL_INPUT_PORTS=5900  # Allow VNC port
+      - FIREWALL_INPUT_PORTS=5999  # Allow VNC port
     ports:
-      - "5900:5900/tcp"  # Expose VNC port
+      - "5999:5999/tcp"  # Expose VNC port
     restart: unless-stopped
 
-  checkip:
-    image: curlimages/curl:latest
-    container_name: checkip
+  macos:
+    image: sickcodes/docker-osx:latest
+    container_name: macos-13
+    privileged: true
     network_mode: service:gluetun
-    entrypoint: >
-      sh -c "
-      curl -s http://ifconfig.me && echo"
-
-  vnc-server:
-    image: dorowu/ubuntu-desktop-lxde-vnc
-    container_name: vnc-server
-    network_mode: "service:gluetun"  # Shares Gluetun's network stack
+    devices:
+      - "/dev/kvm:/dev/kvm"
+    depends_on:
+      wireguard:
+        condition: service_healthy
     environment:
-      - USER=root
-      - PASSWORD=testpassword  # Set your VNC password
-    restart: unless-stopped
-
-  # dnsleaktest:
-  #   image: python:alpine
-  #   container_name: dnsleaktest
-  #   network_mode: container:wireguard
-  #   depends_on:
-  #     wireguard:
-  #       condition: service_healthy
-  #   entrypoint: >
-  #     sh -c "
-  #     wget -q -O- https://raw.githubusercontent.com/macvk/dnsleaktest/master/dnsleaktest.py | python"
-
-  # macos:
-  #   image: sickcodes/docker-osx:latest
-  #   container_name: macos-13
-  #   privileged: true
-  #   network_mode: container:wireguard
-  #   devices:
-  #     - "/dev/kvm:/dev/kvm"
-  #   depends_on:
-  #     wireguard:
-  #       condition: service_healthy
-  #   environment:
-  #     - RAM=16
-  #     - GENERATE_UNIQUE=true
-  #     - DEVICE_MODEL=${DEVICE_MODEL}
-  #     - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
-  #     - SHORTNAME=ventura
-  #     - EXTRA=-display none -vnc 0.0.0.0:99
+      - RAM=16
+      - GENERATE_UNIQUE=true
+      - DEVICE_MODEL=${DEVICE_MODEL}
+      - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
+      - SHORTNAME=ventura
+      - EXTRA=-display none -vnc 0.0.0.0:99
     # volumes:
     #   - "${PWD}/output.env:/env"
