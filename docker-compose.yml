@@ -38,8 +38,6 @@ services:
       retries: 3
       start_period: 10s
     restart: unless-stopped
-    networks:
-      - custom-network
 
   checkip:
     image: curlimages/curl:latest
