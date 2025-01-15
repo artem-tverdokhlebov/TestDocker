@@ -10,10 +10,6 @@
 # clone repo, create .env from .env.example
 # run "docker compose -p macos_project up --build"
 
-networks:
-  custom-network:
-    driver: bridge
-
 services:
   wireguard:
     image: linuxserver/wireguard
@@ -48,8 +44,7 @@ services:
   checkip:
     image: curlimages/curl:latest
     container_name: checkip
-    networks:
-      - custom-network
+    network_mode: service:wireguard
     depends_on:
       wireguard:
         condition: service_healthy
@@ -60,10 +55,7 @@ services:
   vnc-test:
     image: consol/rocky-xfce-vnc
     container_name: vnc-test
-    networks:
-      - custom-network
-    ports:
-      - "5901:5901"  # Expose VNC to the host
+    network_mode: service:wireguard
     environment:
       - VNC_PASSWORD=testpassword  # Set a VNC password
     restart: unless-stopped
