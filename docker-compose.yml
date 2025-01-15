@@ -29,9 +29,9 @@ services:
       - WIREGUARD_ENDPOINT_PORT=51249
       - WIREGUARD_PUBLIC_KEY=Nl00anlFpc371uLu9FBVEnB8iQp/rgACkf6nu+M4Ryo=
       - WIREGUARD_PRESHARED_KEY=3CnHMTrIxRVr7eQh5U6316Yf4/YdoXYoLgE4opUT/zY=
-      - FIREWALL_INPUT_PORTS=5901  # Allow VNC port
+      - FIREWALL_INPUT_PORTS=80  # Allow VNC port
     ports:
-      - "5901:5901/tcp"
+      - "8080:80/tcp"
     restart: unless-stopped
 
   checkip:
@@ -42,12 +42,10 @@ services:
       sh -c "
       curl -s http://ifconfig.me && echo"
 
-  vnc-test:
-    image: consol/rocky-xfce-vnc
-    container_name: vnc-test
+  nginx-test:
+    image: nginx:alpine
+    container_name: nginx-test
     network_mode: "service:gluetun"  # Shares Gluetun's network stack
-    environment:
-      - VNC_PASSWORDLESS=true
     restart: unless-stopped
 
   # dnsleaktest:
