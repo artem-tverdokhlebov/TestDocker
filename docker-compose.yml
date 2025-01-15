@@ -54,5 +54,5 @@ services:
       - DEVICE_MODEL=${DEVICE_MODEL}
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=ventura
-      - EXTRA=-vnc 0.0.0.0:99,1920x1080
+      - EXTRA=-vnc 0.0.0.0:99
       - DISPLAY=${DISPLAY:-:0.0}
