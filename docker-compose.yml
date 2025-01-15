@@ -62,7 +62,7 @@ services:
   vnc-proxy:
     image: alpine/socat
     container_name: vnc-proxy
-    command: tcp-listen:5902,fork,reuseaddr tcp-connect:vnc-test:5901
+    command: tcp-listen:5902,fork,reuseaddr tcp-connect:host.docker.internal:5901
     networks:
       - bypass_wireguard
     ports:
