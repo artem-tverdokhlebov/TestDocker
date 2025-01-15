@@ -50,6 +50,8 @@ services:
       - DEVICE_MODEL=${DEVICE_MODEL}
       - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
       - SHORTNAME=ventura
-      - EXTRA=-display none -vnc 0.0.0.0:99
-    # volumes:
+      - EXTRA=-vnc 0.0.0.0:99
+      - DISPLAY=${DISPLAY:-:0.0}
+    volumes:
+      - "tmp/.X11-unix:/tmp/.X11-unix"
     #   - "${PWD}/output.env:/env"
