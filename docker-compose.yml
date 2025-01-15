@@ -31,7 +31,7 @@ services:
       - WIREGUARD_PRESHARED_KEY=3CnHMTrIxRVr7eQh5U6316Yf4/YdoXYoLgE4opUT/zY=
       - FIREWALL_INPUT_PORTS=5901  # Allow VNC port
     ports:
-      - "5901:5901"  # Expose the VNC port
+      - "0.0.0.0:5901:5901/tcp"
     restart: unless-stopped
 
   checkip:
