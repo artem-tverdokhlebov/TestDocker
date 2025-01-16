@@ -28,7 +28,7 @@ cleanup() {
 }
 
 # Trap Ctrl+C (SIGINT) and call the cleanup function
-trap cleanup SIGINT
+trap cleanup SIGINT SIGTERM SIGHUP
 
 # Stop and remove existing containers
 sudo docker compose -p macos_project down
