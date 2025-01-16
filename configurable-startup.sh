@@ -13,13 +13,14 @@ if [ "$DELAY" -gt 0 ]; then
         SECONDS=$((DELAY % 60))
         
         # Display the countdown timer
-        printf "\r\n[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
+        printf "\r[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
         
-        # Wait for 1 second
-        sleep 1
+        # Wait for 5 seconds or the remaining time, whichever is smaller
+        SLEEP_TIME=$((DELAY < 5 ? DELAY : 5))
+        sleep "$SLEEP_TIME"
         
         # Decrease the delay
-        DELAY=$((DELAY - 1))
+        DELAY=$((DELAY - SLEEP_TIME))
     done
 
     echo -e "\r\n[DELAY] Delay completed. Proceeding with proxy."
