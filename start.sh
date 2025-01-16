@@ -1,5 +1,21 @@
 #!/bin/bash
 
+# Function to clean up background processes and Docker containers
+cleanup() {
+    echo "Cleaning up..."
+    if [[ -n "$LOGS_PID" ]]; then
+        echo "Stopping log viewer..."
+        kill "$LOGS_PID" 2>/dev/null
+    fi
+    echo "Stopping Docker container..."
+    sudo docker compose -p macos_project down
+    echo "Cleanup complete. Exiting."
+    exit 0
+}
+
+# Trap Ctrl+C (SIGINT) and call the cleanup function
+trap cleanup SIGINT
+
 # Stop and remove existing containers
 sudo docker compose -p macos_project down
 
@@ -8,6 +24,11 @@ sudo docker system prune -f
 
 # Start and rebuild the container
 sudo docker compose -p macos_project up --build -d
+
+# Start a background process to follow the container logs
+echo "Starting to follow logs for macos-13 container..."
+sudo docker logs macos-13 -f &
+LOGS_PID=$!
 
 VNC_PORT=5999
 VNC_HOST=localhost
@@ -28,11 +49,6 @@ while true; do
     fi
 done
 
-# Start a background process to follow the container logs
-echo "Starting to follow logs for macos-13 container..."
-sudo docker logs macos-13 -f &
-LOGS_PID=$!
-
 echo "VNC server is ready. Launching VNC viewer..."
 vncviewer $VNC_HOST:$VNC_PORT &
 
@@ -40,13 +56,5 @@ vncviewer $VNC_HOST:$VNC_PORT &
 VNCVIEWER_PID=$!
 wait $VNCVIEWER_PID
 
-# Stop the log-following process when VNC viewer closes
-echo "Stopping log viewer..."
-kill $LOGS_PID
-
-echo "VNC viewer closed. Stopping Docker container..."
-
-# Stop and remove containers after VNC viewer is closed
-sudo docker compose -p macos_project down
-
-echo "Docker containers stopped. Exiting script."
+# Clean up after VNC viewer is closed
+cleanup
