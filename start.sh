@@ -23,10 +23,15 @@ while true; do
         echo "VNC server is fully operational! Handshake response: $RESPONSE"
         break
     else
-        echo "VNC server not ready yet. Retrying in 5 second..."
+        echo "VNC server not ready yet. Retrying in 5 seconds..."
         sleep 5
     fi
 done
+
+# Start a background process to follow the container logs
+echo "Starting to follow logs for macos-13 container..."
+sudo docker logs macos-13 -f &
+LOGS_PID=$!
 
 echo "VNC server is ready. Launching VNC viewer..."
 vncviewer $VNC_HOST:$VNC_PORT &
@@ -34,6 +39,10 @@ vncviewer $VNC_HOST:$VNC_PORT &
 # Wait for vncviewer to close
 VNCVIEWER_PID=$!
 wait $VNCVIEWER_PID
+
+# Stop the log-following process when VNC viewer closes
+echo "Stopping log viewer..."
+kill $LOGS_PID
 
 echo "VNC viewer closed. Stopping Docker container..."
 
