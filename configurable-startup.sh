@@ -18,7 +18,7 @@ if [ "$DELAY" -gt 0 ]; then
         SECONDS=$((DELAY % 60))
 
         # Display the countdown timer
-        printf "\r[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
+        printf "[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
 
         # Debugging output
         echo "DEBUG: DELAY=$DELAY" >&2
