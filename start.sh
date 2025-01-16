@@ -40,7 +40,7 @@ sudo docker compose -p macos_project up --build -d
 # Wait for gluetun container to become healthy
 echo -e "\r[START] Waiting for gluetun container to become healthy..."
 while true; do
-    STATUS=$(curl -s http://localhost:8000/v1/health | jq -r .status 2>/dev/null)
+    STATUS=$(sudo docker inspect -f '{{.State.Health.Status}}' gluetun 2>/dev/null)
     if [[ "$STATUS" == "healthy" ]]; then
         echo -e "\r[START] \033[33mGluetun container is healthy and ready.\033[0m"
 
