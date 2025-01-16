@@ -20,7 +20,7 @@ services:
       - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
       - FIREWALL_INPUT_PORTS=5999
     ports:
-      - "5999:5999/tcp"  # Expose VNC port
+      - "5999:5998/tcp"  # Expose VNC port
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
