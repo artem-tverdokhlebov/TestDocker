@@ -43,6 +43,24 @@ while true; do
     STATUS=$(sudo docker inspect -f '{{.State.Health.Status}}' gluetun 2>/dev/null)
     if [[ "$STATUS" == "healthy" ]]; then
         echo -e "\r[START] \033[33mGluetun container is healthy and ready.\033[0m"
+
+        sudo docker exec gluetun sh -c "curl ifconfig.me"
+
+        # Connect to the container and bring WireGuard down
+        echo -e "\r[START] \033[33mDisabling WireGuard in the gluetun container...\033[0m"
+        sudo docker exec gluetun sh -c "wg-quick down wg0"
+
+        sleep 3
+
+        sudo docker exec gluetun sh -c "curl ifconfig.me"
+
+        # Wait for 3 seconds
+        sleep 3
+
+        # Bring WireGuard back up
+        echo -e "\r[START] \033[33mRe-enabling WireGuard in the gluetun container...\033[0m"
+        sudo docker exec gluetun sh -c "wg-quick up wg0"
+
         break
     else
         echo -e "\r[START] \033[33mGluetun container not ready yet. Retrying in 5 seconds...\033[0m"
