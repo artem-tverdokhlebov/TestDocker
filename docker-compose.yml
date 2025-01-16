@@ -31,11 +31,8 @@ services:
       - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
       - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
       - FIREWALL_INPUT_PORTS=5999
-      - HTTPCONTROLSERVER=on
-      - HTTPCONTROLPORT=8000
     ports:
       - "5999:5999/tcp"  # Expose VNC port
-      - "8000:8000" # Control server port
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
