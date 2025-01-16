@@ -43,34 +43,6 @@ while true; do
     STATUS=$(sudo docker inspect -f '{{.State.Health.Status}}' gluetun 2>/dev/null)
     if [[ "$STATUS" == "healthy" ]]; then
         echo -e "\r[START] \033[33mGluetun container is healthy and ready.\033[0m"
-
-        # Check current OpenVPN status
-        CURRENT_STATUS=$(curl -s http://localhost:8000/v1/openvpn/status | jq -r .status)
-        echo -e "\r[START] \033[33mCurrent OpenVPN status: $CURRENT_STATUS\033[0m"
-
-        # Retrieve the current public IP address
-        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .public_ip)
-        echo -e "\r[START] \033[33mPublic IP before stopping OpenVPN: $PUBLIC_IP\033[0m"
-
-        # Temporarily stop OpenVPN
-        echo -e "\r[START] \033[33mStopping OpenVPN...\033[0m"
-        curl -X PUT -H "Content-Type: application/json" \
-             -d '{"status":"stopped"}' \
-             http://localhost:8000/v1/openvpn/status
-        
-        # Wait for 3 seconds
-        sleep 3
-
-        # Retrieve the current public IP address
-        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .public_ip)
-        echo -e "\r[START] \033[33mPublic IP after stopping OpenVPN: $PUBLIC_IP\033[0m"
-
-        # Start OpenVPN again
-        echo -e "\r[START] \033[33mStarting OpenVPN...\033[0m"
-        curl -X PUT -H "Content-Type: application/json" \
-             -d '{"status":"running"}' \
-             http://localhost:8000/v1/openvpn/status
-
         break
     else
         echo -e "\r[START] \033[33mGluetun container not ready yet. Retrying in 5 seconds...\033[0m"
@@ -80,8 +52,8 @@ done
 
 # Start a background process to follow the container logs
 echo -e "\r[START] Starting to follow logs for gluetun container..."
-# sudo docker logs gluetun -f &
-# LOGS1_PID=$!
+sudo docker logs gluetun -f &
+LOGS1_PID=$!
 
 VNC_PORT=5999
 VNC_HOST=localhost
@@ -119,13 +91,13 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
     wait $VNCVIEWER_PID
     EXIT_STATUS=$?
 
-    # if [ $EXIT_STATUS -eq 0 ]; then
-    #     echo -e "\033[32mVNC viewer exited successfully. Exiting script.\033[0m"
-    #     exit 0
-    # else
+    if [ $EXIT_STATUS -eq 0 ]; then
+        echo -e "\033[32mVNC viewer exited successfully. Exiting script.\033[0m"
+        exit 0
+    else
         echo -e "\033[31mVNC viewer process ended unexpectedly. Retrying...\033[0m"
         ((RETRY_COUNT++))
-    # fi
+    fi
 
     # Add a delay between retries
     sleep 5
