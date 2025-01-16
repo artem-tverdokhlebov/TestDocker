@@ -75,8 +75,5 @@ vncviewer $VNC_HOST:$VNC_PORT &
 VNCVIEWER_PID=$!
 wait $VNCVIEWER_PID
 
-# Trap Ctrl+C (SIGINT) and call the cleanup function
-trap cleanup SIGINT
-
 # Clean up after VNC viewer is closed
 cleanup
