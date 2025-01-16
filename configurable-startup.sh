@@ -33,5 +33,5 @@ else
     echo -e "\r[DELAY] \033[32mNo delay set. Proceeding with proxy.\033[0m"
 fi
 
-# Run the original Gluetun entrypoint or command
-exec "$@"
+# Run the original Gluetun entrypoint
+/gluetun-entrypoint
