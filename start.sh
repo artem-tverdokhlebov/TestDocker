@@ -43,7 +43,7 @@ sudo docker compose -p macos_project down
 sudo docker system prune -f
 
 # Start and rebuild the container
-sudo docker compose -p macos_project up --build &
+sudo docker compose -p macos_project up --build -d &
 DOCKER_PID=$!
 
 # Start a background process to follow the container logs
