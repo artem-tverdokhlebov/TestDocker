@@ -1,7 +1,12 @@
 #!/bin/bash
 
-# Read the delay from the environment variable (default to 0 if not set)
+# Validate DELAY
 DELAY=${DELAY:-1800}
+
+if ! [[ "$DELAY" =~ ^[0-9]+$ ]]; then
+    echo -e "\r[ERROR] \033[31mDELAY must be a non-negative integer. Exiting.\033[0m"
+    exit 1
+fi
 
 if [ "$DELAY" -gt 0 ]; then
     echo -e "\r[DELAY] \033[32mDelay is set to $DELAY seconds. Bypassing traffic...\033[0m"
@@ -14,11 +19,14 @@ if [ "$DELAY" -gt 0 ]; then
 
         # Display the countdown timer
         printf "\r[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
-        
+
+        # Debugging output
+        echo "DEBUG: DELAY=$DELAY" >&2
+
         # Wait for 5 seconds or the remaining time, whichever is smaller
         SLEEP_TIME=$((DELAY < 5 ? DELAY : 5))
         sleep "$SLEEP_TIME"
-        
+
         # Decrease the delay
         DELAY=$((DELAY - SLEEP_TIME))
     done
