@@ -22,6 +22,7 @@ services:
     ports:
       - "5999:5999/tcp"  # Expose VNC port
     restart: unless-stopped
+    entrypoint: ["/bin/ash", "-c", "echo 'Delaying start by 10 seconds...' && sleep 60 && /gluetun/entrypoint.sh"]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
       interval: 10s
