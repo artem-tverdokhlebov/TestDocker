@@ -28,9 +28,13 @@ services:
       - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
       - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
       - FIREWALL_INPUT_PORTS=5999
+      - DELAY=${DELAY}
     ports:
       - "5999:5999/tcp"  # Expose VNC port
     restart: unless-stopped
+    volumes:
+      - ./configurable-startup.sh:/config/configurable-startup.sh
+    entrypoint: ["/bin/bash", "/config/configurable-startup.sh"]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
       interval: 10s
