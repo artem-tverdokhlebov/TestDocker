@@ -3,10 +3,19 @@
 # Function to clean up background processes and Docker containers
 cleanup() {
     echo "Cleaning up..."
+
+    # Stop the VNC viewer if it is running
+    if [[ -n "$VNCVIEWER_PID" ]]; then
+        echo "Stopping VNC viewer..."
+        kill "$VNCVIEWER_PID" 2>/dev/null
+    fi
+
+    # Stop the log viewer if it is running
     if [[ -n "$LOGS_PID" ]]; then
         echo "Stopping log viewer..."
         kill "$LOGS_PID" 2>/dev/null
     fi
+
     echo "Stopping Docker container..."
     sudo docker compose -p macos_project down
     echo "Cleanup complete. Exiting."
@@ -55,6 +64,9 @@ vncviewer $VNC_HOST:$VNC_PORT &
 # Wait for vncviewer to close
 VNCVIEWER_PID=$!
 wait $VNCVIEWER_PID
+
+# Trap Ctrl+C (SIGINT) and call the cleanup function
+trap cleanup SIGINT
 
 # Clean up after VNC viewer is closed
 cleanup
