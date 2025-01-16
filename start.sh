@@ -74,13 +74,33 @@ while true; do
     fi
 done
 
-echo -e "\r[START] \033[33mVNC server is ready. Launching VNC viewer...\033[0m"
-vncviewer $VNC_HOST:$VNC_PORT &
-VNCVIEWER_PID=$!
+MAX_RETRIES=10
+RETRY_COUNT=0
 
-# Monitor the VNC viewer process in the background to handle Ctrl+C
-while kill -0 $VNCVIEWER_PID 2>/dev/null; do
-    sleep 1
+while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+    echo -e "\r[START] \033[33mVNC server is ready. Launching VNC viewer (attempt $((RETRY_COUNT + 1)) of $MAX_RETRIES)...\033[0m"
+    vncviewer $VNC_HOST:$VNC_PORT &
+    VNCVIEWER_PID=$!
+
+    # Monitor the VNC viewer process
+    while kill -0 $VNCVIEWER_PID 2>/dev/null; do
+        sleep 1
+    done
+
+    # Check exit status of the VNC viewer process
+    wait $VNCVIEWER_PID
+    EXIT_STATUS=$?
+
+    if [ $EXIT_STATUS -eq 0 ]; then
+        echo -e "\033[32mVNC viewer exited successfully. Exiting script.\033[0m"
+        exit 0
+    else
+        echo -e "\033[31mVNC viewer process ended unexpectedly. Retrying...\033[0m"
+        ((RETRY_COUNT++))
+    fi
+
+    # Add a delay between retries
+    sleep 5
 done
 
 # Clean up after VNC viewer is closed
