@@ -23,6 +23,8 @@ if [ "$DELAY" -gt 0 ]; then
         # Debugging output
         echo "DEBUG: DELAY=$DELAY" >&2
 
+        echo "2DEBUG: DELAY=$DELAY"
+
         # Wait for 5 seconds or the remaining time, whichever is smaller
         SLEEP_TIME=$((DELAY < 5 ? DELAY : 5))
         sleep "$SLEEP_TIME"
