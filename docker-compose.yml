@@ -35,9 +35,6 @@ services:
     container_name: macos-13
     privileged: true
     network_mode: service:gluetun  # Use the gluetun network stack
-    depends_on:
-      gluetun:
-        condition: service_healthy
     devices:
       - /dev/kvm
     environment:
