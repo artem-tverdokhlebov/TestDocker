@@ -4,7 +4,7 @@
 DELAY=${DELAY:-1800}
 
 if [ "$DELAY" -gt 0 ]; then
-    printf "\nDelay is set to $DELAY seconds. Bypassing traffic..."
+    printf "\r\nDelay is set to $DELAY seconds. Bypassing traffic..."
     
     while [ "$DELAY" -gt 0 ]; do
         # Convert delay to hh:mm:ss format
@@ -21,9 +21,9 @@ if [ "$DELAY" -gt 0 ]; then
         # Decrease the delay
         DELAY=$((DELAY - 1))
     done
-    printf "\n[DELAY] Delay completed. Proceeding with proxy."
+    printf "\r\n[DELAY] Delay completed. Proceeding with proxy."
 else
-    printf "\n[DELAY] No delay set. Proceeding with proxy."
+    printf "\r\n[DELAY] No delay set. Proceeding with proxy."
 fi
 
 # Run the original Gluetun entrypoint or command
