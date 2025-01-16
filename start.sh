@@ -42,7 +42,7 @@ LOGS_PID=$!
 VNC_PORT=5999
 VNC_HOST=localhost
 
-printf "\nChecking if VNC server is fully operational on $VNC_HOST:$VNC_PORT..."
+printf "\n[VNC] Checking if VNC server is fully operational on $VNC_HOST:$VNC_PORT..."
 
 while true; do
     # Try connecting to the VNC server and read the response
@@ -50,15 +50,15 @@ while true; do
 
     # Check if the response contains the expected VNC handshake (RFB protocol)
     if [[ $RESPONSE =~ ^RFB ]]; then
-        printf "\nVNC server is fully operational! Handshake response: $RESPONSE"
+        printf "\n[VNC] VNC server is fully operational! Handshake response: $RESPONSE"
         break
     else
-        printf "\nVNC server not ready yet. Retrying in 30 seconds..."
+        printf "\n[VNC] VNC server not ready yet. Retrying in 30 seconds..."
         sleep 30
     fi
 done
 
-printf "\nVNC server is ready. Launching VNC viewer..."
+printf "\n[VNC] VNC server is ready. Launching VNC viewer..."
 vncviewer $VNC_HOST:$VNC_PORT &
 
 # Wait for vncviewer to close

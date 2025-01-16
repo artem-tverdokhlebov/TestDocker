@@ -4,7 +4,7 @@
 DELAY=${DELAY:-1800}
 
 if [ "$DELAY" -gt 0 ]; then
-    echo "\nDelay is set to $DELAY seconds. Bypassing traffic..."
+    printf "\nDelay is set to $DELAY seconds. Bypassing traffic..."
     
     while [ "$DELAY" -gt 0 ]; do
         # Convert delay to hh:mm:ss format
@@ -13,7 +13,7 @@ if [ "$DELAY" -gt 0 ]; then
         SECONDS=$((DELAY % 60))
         
         # Display the countdown timer
-        printf "\r\033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
+        printf "\r[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
         
         # Wait for 1 second
         sleep 1
@@ -21,9 +21,9 @@ if [ "$DELAY" -gt 0 ]; then
         # Decrease the delay
         DELAY=$((DELAY - 1))
     done
-    echo -e "\nDelay completed. Proceeding with proxy."
+    printf "\n[DELAY] Delay completed. Proceeding with proxy."
 else
-    echo "\nNo delay set. Proceeding with proxy."
+    printf "\n[DELAY] No delay set. Proceeding with proxy."
 fi
 
 # Run the original Gluetun entrypoint or command
