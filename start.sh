@@ -24,6 +24,11 @@ cleanup() {
     echo "Stopping Docker container..."
     sudo docker compose -p macos_project down
     echo "Cleanup complete. Exiting."
+
+    # Reset the terminal to its default state
+    tput cnorm  # Show the cursor
+    stty echo   # Re-enable input echo
+    
     exit 0
 }
 
