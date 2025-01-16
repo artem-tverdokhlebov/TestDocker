@@ -19,10 +19,11 @@ services:
       - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
       - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
       - FIREWALL_INPUT_PORTS=5999
+      - DELAY=${DELAY:-1000}
     ports:
       - "5999:5999/tcp"  # Expose VNC port
     restart: unless-stopped
-    entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep 900 && /gluetun-entrypoint"]
+    entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep ${DELAY} && /gluetun-entrypoint"]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
       interval: 10s
