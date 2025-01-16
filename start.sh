@@ -5,12 +5,6 @@ cleanup() {
     echo -e "\r[START] \033[33mCleaning up...\033[0m"
 
     # Stop the VNC viewer if it is running
-    if [[ -n "$DOCKER_PID" ]]; then
-        echo -e "\r[START] \033[33mStopping docker build...\033[0m"
-        kill "$DOCKER_PID" 2>/dev/null || true
-    fi
-
-    # Stop the VNC viewer if it is running
     if [[ -n "$VNCVIEWER_PID" ]]; then
         echo -e "\r[START] \033[33mStopping VNC viewer...\033[0m"
         kill "$VNCVIEWER_PID" 2>/dev/null || true
@@ -43,8 +37,7 @@ sudo docker compose -p macos_project down
 sudo docker system prune -f
 
 # Start and rebuild the container
-sudo docker compose -p macos_project up --build -d &
-DOCKER_PID=$!
+sudo docker compose -p macos_project up --build
 
 # Start a background process to follow the container logs
 echo -e "[START] Starting to follow logs for gluetun container..."
