@@ -34,11 +34,11 @@ trap cleanup SIGINT SIGTERM SIGHUP
 sudo docker compose -p macos_project down
 
 # Start the containers in detached mode
-echo -e "[START] Starting Docker containers in detached mode..."
+echo -e "\r[START] Starting Docker containers in detached mode..."
 sudo docker compose -p macos_project up --build -d
 
 # Wait for gluetun container to become healthy
-echo -e "[START] Waiting for gluetun container to become healthy..."
+echo -e "\r[START] Waiting for gluetun container to become healthy..."
 while true; do
     STATUS=$(sudo docker inspect -f '{{.State.Health.Status}}' gluetun 2>/dev/null)
     if [[ "$STATUS" == "healthy" ]]; then
@@ -51,7 +51,7 @@ while true; do
 done
 
 # Start a background process to follow the container logs
-echo -e "[START] Starting to follow logs for gluetun container..."
+echo -e "\r[START] Starting to follow logs for gluetun container..."
 sudo docker logs gluetun -f &
 LOGS1_PID=$!
 
