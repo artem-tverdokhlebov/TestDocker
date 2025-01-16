@@ -11,9 +11,14 @@ cleanup() {
     fi
 
     # Stop the log viewer if it is running
-    if [[ -n "$LOGS_PID" ]]; then
+    if [[ -n "$LOGS1_PID" ]]; then
         echo "Stopping log viewer..."
-        kill "$LOGS_PID" 2>/dev/null
+        kill "$LOGS1_PID" 2>/dev/null
+    fi
+
+    if [[ -n "$LOGS2_PID" ]]; then
+        echo "Stopping log viewer..."
+        kill "$LOGS2_PID" 2>/dev/null
     fi
 
     echo "Stopping Docker container..."
@@ -35,9 +40,14 @@ sudo docker system prune -f
 sudo docker compose -p macos_project up --build -d
 
 # Start a background process to follow the container logs
-echo "Starting to follow logs for gluetun and macos-13 container..."
+echo "Starting to follow logs for gluetun container..."
+sudo docker logs gluetun gluetun -f &
+LOGS1_PID=$!
+
+# Start a background process to follow the container logs
+echo "Starting to follow logs for macos-13 container..."
 sudo docker logs gluetun macos-13 -f &
-LOGS_PID=$!
+LOGS2_PID=$!
 
 VNC_PORT=5999
 VNC_HOST=localhost
