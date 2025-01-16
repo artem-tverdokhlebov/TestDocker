@@ -13,7 +13,7 @@ if [ "$DELAY" -gt 0 ]; then
         SECONDS=$((DELAY % 60))
         
         # Display the countdown timer
-        printf "\r[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
+        printf "\r\n[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
         
         # Wait for 1 second
         sleep 1
