@@ -10,14 +10,14 @@ cleanup() {
         kill "$VNCVIEWER_PID" 2>/dev/null
     fi
 
-    # Stop the log viewer if it is running
+    # Stop the log viewers if they are running
     if [[ -n "$LOGS1_PID" ]]; then
-        echo "Stopping log viewer..."
+        echo "Stopping log viewer for gluetun..."
         kill "$LOGS1_PID" 2>/dev/null
     fi
 
     if [[ -n "$LOGS2_PID" ]]; then
-        echo "Stopping log viewer..."
+        echo "Stopping log viewer for macos-13..."
         kill "$LOGS2_PID" 2>/dev/null
     fi
 
@@ -75,10 +75,12 @@ done
 
 echo -e "\r\n[VNC] VNC server is ready. Launching VNC viewer..."
 vncviewer $VNC_HOST:$VNC_PORT &
-
-# Wait for vncviewer to close
 VNCVIEWER_PID=$!
-wait $VNCVIEWER_PID
+
+# Monitor the VNC viewer process in the background to handle Ctrl+C
+while kill -0 $VNCVIEWER_PID 2>/dev/null; do
+    sleep 1
+done
 
 # Clean up after VNC viewer is closed
 cleanup
