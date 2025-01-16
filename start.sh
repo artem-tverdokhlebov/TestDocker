@@ -91,13 +91,13 @@ while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
     wait $VNCVIEWER_PID
     EXIT_STATUS=$?
 
-    if [ $EXIT_STATUS -eq 0 ]; then
-        echo -e "\033[32mVNC viewer exited successfully. Exiting script.\033[0m"
-        exit 0
-    else
+    # if [ $EXIT_STATUS -eq 0 ]; then
+    #     echo -e "\033[32mVNC viewer exited successfully. Exiting script.\033[0m"
+    #     exit 0
+    # else
         echo -e "\033[31mVNC viewer process ended unexpectedly. Retrying...\033[0m"
         ((RETRY_COUNT++))
-    fi
+    # fi
 
     # Add a delay between retries
     sleep 5
