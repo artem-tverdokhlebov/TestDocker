@@ -33,11 +33,22 @@ trap cleanup SIGINT SIGTERM SIGHUP
 # Stop and remove existing containers
 sudo docker compose -p macos_project down
 
-# Remove unused Docker objects
-sudo docker system prune -f
+# Start the containers in detached mode
+echo -e "[START] Starting Docker containers in detached mode..."
+sudo docker compose -p macos_project up --build -d
 
-# Start and rebuild the container
-sudo docker compose -p macos_project up --build
+# Wait for gluetun container to become healthy
+echo -e "[START] Waiting for gluetun container to become healthy..."
+while true; do
+    STATUS=$(sudo docker inspect -f '{{.State.Health.Status}}' gluetun 2>/dev/null)
+    if [[ "$STATUS" == "healthy" ]]; then
+        echo -e "\r[START] \033[33mGluetun container is healthy and ready.\033[0m"
+        break
+    else
+        echo -e "\r[START] \033[33mGluetun container not ready yet. Retrying in 5 seconds...\033[0m"
+        sleep 5
+    fi
+done
 
 # Start a background process to follow the container logs
 echo -e "[START] Starting to follow logs for gluetun container..."
