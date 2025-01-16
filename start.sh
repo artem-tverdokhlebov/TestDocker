@@ -49,7 +49,7 @@ while true; do
         echo -e "\r[START] \033[33mCurrent OpenVPN status: $CURRENT_STATUS\033[0m"
 
         # Retrieve the current public IP address
-        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .ip)
+        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .public_ip)
         echo -e "\r[START] \033[33mPublic IP before stopping OpenVPN: $PUBLIC_IP\033[0m"
 
         # Temporarily stop OpenVPN
@@ -62,7 +62,7 @@ while true; do
         sleep 3
 
         # Retrieve the current public IP address
-        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .ip)
+        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .public_ip)
         echo -e "\r[START] \033[33mPublic IP after stopping OpenVPN: $PUBLIC_IP\033[0m"
 
         # Start OpenVPN again
@@ -80,8 +80,8 @@ done
 
 # Start a background process to follow the container logs
 echo -e "\r[START] Starting to follow logs for gluetun container..."
-sudo docker logs gluetun -f &
-LOGS1_PID=$!
+# sudo docker logs gluetun -f &
+# LOGS1_PID=$!
 
 VNC_PORT=5999
 VNC_HOST=localhost
