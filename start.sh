@@ -2,23 +2,23 @@
 
 # Function to clean up background processes and Docker containers
 cleanup() {
-    echo -e "\n[START] \033[33mCleaning up...\033[0m"
+    echo -e "[START] \033[33mCleaning up...\033[0m"
 
     # Stop the VNC viewer if it is running
     if [[ -n "$VNCVIEWER_PID" ]]; then
-        echo -e "\n[START] \033[33mStopping VNC viewer...\033[0m"
+        echo -e "[START] \033[33mStopping VNC viewer...\033[0m"
         kill "$VNCVIEWER_PID" 2>/dev/null
     fi
 
     # Stop the log viewers if they are running
     if [[ -n "$LOGS1_PID" ]]; then
-        echo -e "\n[START] \033[33mStopping log viewer for gluetun...\033[0m"
+        echo -e "[START] \033[33mStopping log viewer for gluetun...\033[0m"
         kill "$LOGS1_PID" 2>/dev/null
     fi
 
-    echo -e "\n[START] \033[33mStopping Docker container...\033[0m"
+    echo -e "[START] \033[33mStopping Docker container...\033[0m"
     sudo docker compose -p macos_project down
-    echo -e "\n[START] \033[33mCleanup complete. Exiting.\033[0m"
+    echo -e "[START] \033[33mCleanup complete. Exiting.\033[0m"
 
     # Reset the terminal to its default state
     tput cnorm  # Show the cursor
