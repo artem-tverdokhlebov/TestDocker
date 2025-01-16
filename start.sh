@@ -41,12 +41,12 @@ sudo docker compose -p macos_project up --build -d
 
 # Start a background process to follow the container logs
 echo "Starting to follow logs for gluetun container..."
-sudo docker logs gluetun gluetun -f &
+sudo docker logs gluetun -f &
 LOGS1_PID=$!
 
 # Start a background process to follow the container logs
 echo "Starting to follow logs for macos-13 container..."
-sudo docker logs gluetun macos-13 -f &
+sudo docker logs macos-13 -f &
 LOGS2_PID=$!
 
 VNC_PORT=5999
