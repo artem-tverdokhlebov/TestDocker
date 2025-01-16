@@ -12,8 +12,6 @@ if [ "$DELAY" -gt 0 ]; then
         MINUTES=$(((DELAY % 3600) / 60))
         SECONDS=$((DELAY % 60))
         
-        echo "TEST"
-
         # Display the countdown timer
         printf "[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
         
