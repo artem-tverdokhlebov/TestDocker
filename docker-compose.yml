@@ -16,8 +16,11 @@ services:
     container_name: gluetun
     cap_add:
       - NET_ADMIN
+      - SYS_MODULE
     devices:
       - /dev/net/tun
+    volumes:
+      - /lib/modules:/lib/modules:ro
     environment:
       - VPN_SERVICE_PROVIDER=custom  # Use 'custom' for manual WireGuard configuration
       - VPN_TYPE=wireguard
