@@ -1,15 +1,3 @@
-# docker compose -p macos_project up --build -- Run from scratch
-# docker compose -p macos_project up -- Run previously created
-# docker compose -p macos_project build --no-cache proxy -- Recreate proxy
-# docker system prune -- Remove everything
-
-# Steps:
-# clean vds, ubuntu 24.04
-# install xcfe4, vnc setup
-# docker install
-# clone repo, create .env from .env.example
-# run "docker compose -p macos_project up --build"
-
 services:
   gluetun:
     image: qmcgaw/gluetun
