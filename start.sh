@@ -7,13 +7,13 @@ cleanup() {
     # Stop the VNC viewer if it is running
     if [[ -n "$VNCVIEWER_PID" ]]; then
         echo -e "\r[START] \033[33mStopping VNC viewer...\033[0m"
-        kill "$VNCVIEWER_PID" 2>/dev/null
+        kill "$VNCVIEWER_PID" 2>/dev/null || true
     fi
 
     # Stop the log viewers if they are running
     if [[ -n "$LOGS1_PID" ]]; then
         echo -e "\r[START] \033[33mStopping log viewer for gluetun...\033[0m"
-        kill "$LOGS1_PID" 2>/dev/null
+        kill "$LOGS1_PID" 2>/dev/null || true
     fi
 
     echo -e "\r[START] \033[33mStopping Docker container...\033[0m"
