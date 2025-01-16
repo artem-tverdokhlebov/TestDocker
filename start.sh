@@ -2,28 +2,28 @@
 
 # Function to clean up background processes and Docker containers
 cleanup() {
-    echo "Cleaning up..."
+    echo -e "\n[START] \033[33mCleaning up...\033[0m"
 
     # Stop the VNC viewer if it is running
     if [[ -n "$VNCVIEWER_PID" ]]; then
-        echo "Stopping VNC viewer..."
+        echo -e "\n[START] \033[33mStopping VNC viewer...\033[0m"
         kill "$VNCVIEWER_PID" 2>/dev/null
     fi
 
     # Stop the log viewers if they are running
     if [[ -n "$LOGS1_PID" ]]; then
-        echo "Stopping log viewer for gluetun..."
+        echo -e "\n[START] \033[33mStopping log viewer for gluetun...\033[0m"
         kill "$LOGS1_PID" 2>/dev/null
     fi
 
     if [[ -n "$LOGS2_PID" ]]; then
-        echo "Stopping log viewer for macos-13..."
+        echo -e "\n[START] \033[33mStopping log viewer for macos-13...\033[0m"
         kill "$LOGS2_PID" 2>/dev/null
     fi
 
-    echo "Stopping Docker container..."
+    echo -e "\n[START] \033[33mStopping Docker container...\033[0m"
     sudo docker compose -p macos_project down
-    echo "Cleanup complete. Exiting."
+    echo -e "\n[START] \033[33mCleanup complete. Exiting.\033[0m"
 
     # Reset the terminal to its default state
     tput cnorm  # Show the cursor
@@ -45,19 +45,19 @@ sudo docker system prune -f
 sudo docker compose -p macos_project up --build -d
 
 # Start a background process to follow the container logs
-echo "Starting to follow logs for gluetun container..."
+echo -e "\n[START] Starting to follow logs for gluetun container..."
 sudo docker logs gluetun -f &
 LOGS1_PID=$!
 
 # Start a background process to follow the container logs
-echo "Starting to follow logs for macos-13 container..."
+echo -e "\n[START] Starting to follow logs for macos-13 container..."
 sudo docker logs macos-13 -f &
 LOGS2_PID=$!
 
 VNC_PORT=5999
 VNC_HOST=localhost
 
-echo -e "\r\n[VNC] Checking if VNC server is fully operational on $VNC_HOST:$VNC_PORT..."
+echo -e "\r\n[START] \033[33mChecking if VNC server is fully operational on $VNC_HOST:$VNC_PORT...\033[0m"
 
 while true; do
     # Try connecting to the VNC server and read the response
@@ -65,15 +65,15 @@ while true; do
 
     # Check if the response contains the expected VNC handshake (RFB protocol)
     if [[ $RESPONSE =~ ^RFB ]]; then
-        echo -e "\r\n[VNC] VNC server is fully operational! Handshake response: $RESPONSE"
+        echo -e "\r\n[START] \033[33mVNC server is fully operational! Handshake response: $RESPONSE\033[0m"
         break
     else
-        echo -e "\r\n[VNC] VNC server not ready yet. Retrying in 30 seconds..."
+        echo -e "\r\n[START] \033[33mVNC server not ready yet. Retrying in 30 seconds...\033[0m"
         sleep 30
     fi
 done
 
-echo -e "\r\n[VNC] VNC server is ready. Launching VNC viewer..."
+echo -e "\r\n[START] \033[33mVNC server is ready. Launching VNC viewer...\033[0m"
 vncviewer $VNC_HOST:$VNC_PORT &
 VNCVIEWER_PID=$!
 
