@@ -33,7 +33,7 @@ LOGS_PID=$!
 VNC_PORT=5999
 VNC_HOST=localhost
 
-echo "Checking if VNC server is fully operational on $VNC_HOST:$VNC_PORT..."
+echo "\nChecking if VNC server is fully operational on $VNC_HOST:$VNC_PORT..."
 
 while true; do
     # Try connecting to the VNC server and read the response
@@ -41,15 +41,15 @@ while true; do
 
     # Check if the response contains the expected VNC handshake (RFB protocol)
     if [[ $RESPONSE =~ ^RFB ]]; then
-        echo "VNC server is fully operational! Handshake response: $RESPONSE"
+        echo "\nVNC server is fully operational! Handshake response: $RESPONSE"
         break
     else
-        echo "VNC server not ready yet. Retrying in 5 seconds..."
+        echo "\nVNC server not ready yet. Retrying in 5 seconds..."
         sleep 5
     fi
 done
 
-echo "VNC server is ready. Launching VNC viewer..."
+echo "\nVNC server is ready. Launching VNC viewer..."
 vncviewer $VNC_HOST:$VNC_PORT &
 
 # Wait for vncviewer to close
