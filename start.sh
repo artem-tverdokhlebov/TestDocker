@@ -40,26 +40,36 @@ sudo docker compose -p macos_project up --build -d
 # Wait for gluetun container to become healthy
 echo -e "\r[START] Waiting for gluetun container to become healthy..."
 while true; do
-    STATUS=$(sudo docker inspect -f '{{.State.Health.Status}}' gluetun 2>/dev/null)
+    STATUS=$(curl -s http://localhost:8000/v1/health | jq -r .status 2>/dev/null)
     if [[ "$STATUS" == "healthy" ]]; then
         echo -e "\r[START] \033[33mGluetun container is healthy and ready.\033[0m"
 
-        sudo docker exec gluetun sh -c "curl ifconfig.me"
+        # Check current OpenVPN status
+        CURRENT_STATUS=$(curl -s http://localhost:8000/v1/openvpn/status | jq -r .status)
+        echo -e "\r[START] \033[33mCurrent OpenVPN status: $CURRENT_STATUS\033[0m"
 
-        # Connect to the container and bring WireGuard down
-        echo -e "\r[START] \033[33mDisabling WireGuard in the gluetun container...\033[0m"
-        sudo docker exec gluetun sh -c "wg-quick down wg0"
+        # Retrieve the current public IP address
+        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .ip)
+        echo -e "\r[START] \033[33mPublic IP before stopping OpenVPN: $PUBLIC_IP\033[0m"
 
-        sleep 3
-
-        sudo docker exec gluetun sh -c "curl ifconfig.me"
-
+        # Temporarily stop OpenVPN
+        echo -e "\r[START] \033[33mStopping OpenVPN...\033[0m"
+        curl -X PUT -H "Content-Type: application/json" \
+             -d '{"status":"stopped"}' \
+             http://localhost:8000/v1/openvpn/status
+        
         # Wait for 3 seconds
         sleep 3
 
-        # Bring WireGuard back up
-        echo -e "\r[START] \033[33mRe-enabling WireGuard in the gluetun container...\033[0m"
-        sudo docker exec gluetun sh -c "wg-quick up wg0"
+        # Retrieve the current public IP address
+        PUBLIC_IP=$(curl -s http://localhost:8000/v1/publicip/ip | jq -r .ip)
+        echo -e "\r[START] \033[33mPublic IP after stopping OpenVPN: $PUBLIC_IP\033[0m"
+
+        # Start OpenVPN again
+        echo -e "\r[START] \033[33mStarting OpenVPN...\033[0m"
+        curl -X PUT -H "Content-Type: application/json" \
+             -d '{"status":"running"}' \
+             http://localhost:8000/v1/openvpn/status
 
         break
     else
