@@ -34,7 +34,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./configurable-startup.sh:/config/configurable-startup.sh
-    entrypoint: ["/bin/bash", "/config/configurable-startup.sh"]
+    entrypoint: ["/bin/ash", "/config/configurable-startup.sh"]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
       interval: 10s
