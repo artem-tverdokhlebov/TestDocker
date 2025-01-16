@@ -18,12 +18,7 @@ if [ "$DELAY" -gt 0 ]; then
         SECONDS=$((DELAY % 60))
 
         # Display the countdown timer
-        printf "[DELAY] \033[32mTime remaining: %02d:%02d:%02d\033[0m" "$HOURS" "$MINUTES" "$SECONDS"
-
-        # Debugging output
-        echo "DEBUG: DELAY=$DELAY" >&2
-
-        echo "2DEBUG: DELAY=$DELAY"
+        echo -e "\r[DELAY] \033[32mTime remaining: $DELAY s\033[0m"
 
         # Wait for 5 seconds or the remaining time, whichever is smaller
         SLEEP_TIME=$((DELAY < 5 ? DELAY : 5))
