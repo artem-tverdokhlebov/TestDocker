@@ -42,6 +42,8 @@ services:
     devices:
       - /dev/kvm
       - /dev/net/tun
+    volumes:
+      - ./data:/storage
     environment:
       - VERSION=14
       - MODEL=${DEVICE_MODEL}
