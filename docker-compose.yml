@@ -28,6 +28,9 @@ services:
     image: dockurr/macos
     container_name: macos
     privileged: true
+    depends_on:
+      gluetun:
+        condition: service_healthy
     network_mode: service:gluetun  # Use the gluetun network stack
     devices:
       - /dev/kvm
