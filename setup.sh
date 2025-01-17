@@ -20,9 +20,7 @@ sudo docker compose -p osxvm down
 # Start the containers in detached mode
 echo -e "\r\033[33mStarting Docker containers in detached mode...\033[0m"
 
-DELAY=1000
-export DELAY
-
+export DELAY=1000
 sudo docker compose -p osxvm up --build
 
 # Clean up after VNC viewer is closed
