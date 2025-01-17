@@ -23,5 +23,3 @@ DELAY=1000 docker compose -p osxvm up --build
 
 # Clean up after VNC viewer is closed
 cleanup
-
-DELAY=1000 docker compose -p osxvm up --build
