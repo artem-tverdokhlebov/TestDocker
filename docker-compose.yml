@@ -21,7 +21,7 @@ services:
       - FIREWALL_INPUT_PORTS=8006
       - DELAY=${DELAY:-1000}
     ports:
-      - "8006:8006/tcp"  # Expose VNC port
+      - "8006:8006"
     entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep \"${DELAY}\" && /gluetun-entrypoint"]
     healthcheck:
       test: ["CMD", "wget", "-qO-", "https://1.1.1.1"]
