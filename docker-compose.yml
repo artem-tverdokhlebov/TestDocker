@@ -23,6 +23,12 @@ services:
     ports:
       - "8006:8006/tcp"  # Expose VNC port
     entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep \"${DELAY}\" && /gluetun-entrypoint"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "https://1.1.1.1"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
 
   macos:
     image: dockurr/macos
