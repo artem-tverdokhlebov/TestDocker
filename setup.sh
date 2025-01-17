@@ -14,7 +14,7 @@ cleanup() {
 # Trap Ctrl+C (SIGINT) and call the cleanup function
 trap cleanup SIGINT SIGTERM SIGHUP
 
-# Stop and remove existing containers
+# Stop existing containers
 docker compose -p osxvm down
 
 # Start the containers in detached mode
