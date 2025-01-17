@@ -18,32 +18,23 @@ services:
       - WIREGUARD_ENDPOINT_PORT=${WIREGUARD_ENDPOINT_PORT}
       - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
       - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
-      - FIREWALL_INPUT_PORTS=5999
+      - FIREWALL_INPUT_PORTS=8006
       - DELAY=${DELAY:-1000}
     ports:
-      - "5999:5999/tcp"  # Expose VNC port
-    restart: unless-stopped
+      - "8006:8006/tcp"  # Expose VNC port
     entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep ${DELAY} && /gluetun-entrypoint"]
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://ipinfo.io"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
 
   macos:
-    image: sickcodes/docker-osx:latest
-    container_name: macos-13
+    image: dockurr/macos
+    container_name: macos
     privileged: true
     network_mode: service:gluetun  # Use the gluetun network stack
     devices:
       - /dev/kvm
+      - /dev/net/tun
     environment:
-      - RAM=16
-      - GENERATE_UNIQUE=true
-      - DEVICE_MODEL=${DEVICE_MODEL}
-      - MASTER_PLIST_URL=https://raw.githubusercontent.com/sickcodes/osx-serial-generator/master/config-custom.plist
-      - SHORTNAME=ventura
-      - EXTRA=-display none -vnc 0.0.0.0:99
-      - WIDTH=1280
-      - HEIGHT=720
+      - VERSION="14"
+      - MODEL=${DEVICE_MODEL}
+      - RAM_SIZE="16G"
+      - CPU_CORES="6"
+    stop_grace_period: 2m
