@@ -42,8 +42,8 @@ services:
       - /dev/kvm
       - /dev/net/tun
     environment:
-      - VERSION="14"
+      - VERSION=14
       - MODEL=${DEVICE_MODEL}
-      - RAM_SIZE="16G"
-      - CPU_CORES="6"
+      - RAM_SIZE=16G
+      - CPU_CORES=6
     stop_grace_period: 2m
