@@ -22,7 +22,7 @@ services:
       - DELAY=${DELAY:-1000}
     ports:
       - "8006:8006/tcp"  # Expose VNC port
-    entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep ${DELAY} && /gluetun-entrypoint"]
+    entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep \"${DELAY}\" && /gluetun-entrypoint"]
 
   macos:
     image: dockurr/macos
