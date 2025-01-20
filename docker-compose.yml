@@ -3,6 +3,8 @@ services:
     image: dockurr/macos
     container_name: macos
     privileged: true
+    ports:
+      - "8006:8006"
     devices:
       - /dev/kvm
       - /dev/net/tun
