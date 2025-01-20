@@ -1,44 +1,8 @@
 services:
-  gluetun:
-    image: qmcgaw/gluetun
-    container_name: gluetun
-    cap_add:
-      - NET_ADMIN
-      - SYS_MODULE
-    devices:
-      - /dev/net/tun
-    volumes:
-      - /lib/modules:/lib/modules:ro
-    environment:
-      - VPN_SERVICE_PROVIDER=custom  # Use 'custom' for manual WireGuard configuration
-      - VPN_TYPE=wireguard
-      - WIREGUARD_PRIVATE_KEY=${WIREGUARD_PRIVATE_KEY}
-      - WIREGUARD_ADDRESSES=${WIREGUARD_ADDRESSES}
-      - WIREGUARD_ENDPOINT_IP=${WIREGUARD_ENDPOINT_IP}
-      - WIREGUARD_ENDPOINT_PORT=${WIREGUARD_ENDPOINT_PORT}
-      - WIREGUARD_PUBLIC_KEY=${WIREGUARD_PUBLIC_KEY}
-      - WIREGUARD_PRESHARED_KEY=${WIREGUARD_PRESHARED_KEY}
-      - FIREWALL_INPUT_PORTS=8006
-      - FIREWALL_VPN_INPUT_PORTS=8006
-      - DELAY=${DELAY:-1000}
-    ports:
-      - "8006:8006"
-    entrypoint: ["/bin/sh", "-c", "echo 'Delaying start...' && sleep \"${DELAY}\" && /gluetun-entrypoint"]
-    healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://example.com"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-      start_period: 30s
-
   macos:
     image: dockurr/macos
     container_name: macos
     privileged: true
-    depends_on:
-      gluetun:
-        condition: service_healthy
-    network_mode: service:gluetun  # Use the gluetun network stack
     devices:
       - /dev/kvm
       - /dev/net/tun
