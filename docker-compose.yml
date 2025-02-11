@@ -44,7 +44,7 @@ services:
     volumes:
       - ./data:/storage
     environment:
-      - VERSION=14
+      - VERSION=${MACOS_VERSION}
       - MODEL=${DEVICE_MODEL}
       - RAM_SIZE=16G
       - CPU_CORES=6
