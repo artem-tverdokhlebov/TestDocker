@@ -20,7 +20,7 @@ $currentMacOSVersion = file_exists(BASE_PATH . '/data/macos.version') ? trim(fil
 
 // Check Docker container status
 $dockerStatus = [];
-exec("docker-compose -f " . BASE_PATH . "/docker-compose.yml ps", $dockerOutput);
+exec("docker compose -f " . BASE_PATH . "/docker-compose.yml ps", $dockerOutput);
 foreach ($dockerOutput as $line) {
     if (trim($line) !== '') {
         $dockerStatus[] = trim($line);
