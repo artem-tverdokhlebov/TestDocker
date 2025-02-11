@@ -91,8 +91,8 @@ if (file_exists($envFilePath)) {
                 <i class="fas fa-arrow-right"></i> 
                 Continue
             </button>
-            <button type="submit" name="action" value="stop" class="btn btn-secondary">
-                <i class="fas fa-arrow-right"></i> 
+            <button type="submit" name="action" value="stop" class="btn btn-warning">
+                <i class="fas fa-stop"></i> 
                 Stop
             </button>
             <button type="submit" name="action" value="reset" class="btn btn-danger">
