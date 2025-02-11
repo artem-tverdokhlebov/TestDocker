@@ -50,7 +50,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     // Redirect back to the form
-    header('Location: index.php');
+    // header('Location: index.php');
     exit();
 }
 ?> 
