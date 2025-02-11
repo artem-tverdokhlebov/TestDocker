@@ -7,47 +7,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     
     // Check the action
     $action = $_POST['action'];
-    
-    // Handle stopping the running script
-    if ($action === 'stop') {
-        if (file_exists(BASE_PATH . '/setup.pid')) {
-            $pid = file_get_contents(BASE_PATH . '/setup.pid');
-            exec("kill -SIGINT $pid"); // Send SIGINT signal using exec
-            
-            // Wait for the process to terminate
-            while (posix_getpgid($pid) !== false) {
-                sleep(1); // Wait for 1 second before checking again
-            }
 
-            unlink(BASE_PATH . '/setup.pid'); // Remove PID file
-            unlink(BASE_PATH . '/setup.log'); // Optionally remove log file
-        } elseif (file_exists(BASE_PATH . '/continue.pid')) {
-            $pid = file_get_contents(BASE_PATH . '/continue.pid');
-            exec("kill -SIGINT $pid"); // Send SIGINT signal using exec
-            
-            // Wait for the process to terminate
-            while (posix_getpgid($pid) !== false) {
-                sleep(1); // Wait for 1 second before checking again
-            }
-
-            unlink(BASE_PATH . '/continue.pid'); // Remove PID file
-            unlink(BASE_PATH . '/continue.log'); // Optionally remove log file
-        } elseif (file_exists(BASE_PATH . '/reset.pid')) {
-            $pid = file_get_contents(BASE_PATH . '/reset.pid');
-            exec("kill -SIGINT $pid"); // Send SIGINT signal using exec
-            
-            // Wait for the process to terminate
-            while (posix_getpgid($pid) !== false) {
-                sleep(1); // Wait for 1 second before checking again
-            }
-
-            unlink(BASE_PATH . '/reset.pid'); // Remove PID file
-            unlink(BASE_PATH . '/reset.log'); // Optionally remove log file
-        }
-        header('Location: index.php'); // Redirect back to the form
-        exit();
-    }
-    
     // Update the .env file with the submitted values
     $data = [
         "WIREGUARD_PRIVATE_KEY" => trim($_POST['WIREGUARD_PRIVATE_KEY'], " \t\n\r\0\x0B\"'"),
@@ -70,16 +30,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Execute the appropriate bash script based on the button clicked
     switch ($action) {
         case 'setup':
-            exec('nohup bash ' . BASE_PATH . '/setup.sh > ' . BASE_PATH . '/setup.log 2>&1 & echo $!', $output);
-            file_put_contents(BASE_PATH . '/setup.pid', trim($output[0])); // Save PID
+            exec('bash ' . BASE_PATH . '/setup.sh > /dev/null 2>&1 &'); // Run in detached mode
             break;
         case 'continue':
-            exec('nohup bash ' . BASE_PATH . '/continue.sh > ' . BASE_PATH . '/continue.log 2>&1 & echo $!', $output);
-            file_put_contents(BASE_PATH . '/continue.pid', trim($output[0])); // Save PID
+            exec('bash ' . BASE_PATH . '/continue.sh > /dev/null 2>&1 &'); // Run in detached mode
             break;
         case 'reset':
-            exec('nohup bash ' . BASE_PATH . '/reset.sh > ' . BASE_PATH . '/reset.log 2>&1 & echo $!', $output);
-            file_put_contents(BASE_PATH . '/reset.pid', trim($output[0])); // Save PID
+            exec('bash ' . BASE_PATH . '/reset.sh > /dev/null 2>&1 &'); // Run in detached mode
+            break;
+        case 'stop':
+            exec("bash " . BASE_PATH . "/stop.sh", $output, $return_var); // Execute stop.sh
             break;
         case 'save':
             // Just save the config, no action needed
