@@ -47,7 +47,13 @@ $isRunning = count($dockerStatus) > 1; // More than 1 line indicates running
     <div class="alert alert-info" role="alert">
         <strong>Current Serial Number:</strong> <?php echo htmlspecialchars($currentSerialNumber); ?><br>
         <strong>Current macOS Version:</strong> <?php echo htmlspecialchars($currentMacOSVersion); ?><br>
-        <strong>Docker Status:</strong> <?php echo $isRunning ? 'Running' : 'Stopped'; ?>
+        <strong>Docker Status:</strong> <?php echo $isRunning ? 'Running' : 'Stopped'; ?><br>
+        <?php if ($isRunning): ?>
+            <strong>Virtual Machine Link:</strong> 
+            <a href="http://78.46.94.39:8006" target="_blank" class="btn btn-info">
+                Open Virtual Machine
+            </a>
+        <?php endif; ?>
     </div>
 
     <form action="process.php" method="post">
