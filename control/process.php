@@ -13,16 +13,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (file_exists(BASE_PATH . '/setup.pid')) {
             $pid = file_get_contents(BASE_PATH . '/setup.pid');
             exec("kill -SIGINT $pid"); // Send SIGINT signal using exec
+            
+            // Wait for the process to terminate
+            while (posix_getpgid($pid) !== false) {
+                sleep(1); // Wait for 1 second before checking again
+            }
+
             unlink(BASE_PATH . '/setup.pid'); // Remove PID file
             unlink(BASE_PATH . '/setup.log'); // Optionally remove log file
         } elseif (file_exists(BASE_PATH . '/continue.pid')) {
             $pid = file_get_contents(BASE_PATH . '/continue.pid');
             exec("kill -SIGINT $pid"); // Send SIGINT signal using exec
+            
+            // Wait for the process to terminate
+            while (posix_getpgid($pid) !== false) {
+                sleep(1); // Wait for 1 second before checking again
+            }
+
             unlink(BASE_PATH . '/continue.pid'); // Remove PID file
             unlink(BASE_PATH . '/continue.log'); // Optionally remove log file
         } elseif (file_exists(BASE_PATH . '/reset.pid')) {
             $pid = file_get_contents(BASE_PATH . '/reset.pid');
             exec("kill -SIGINT $pid"); // Send SIGINT signal using exec
+            
+            // Wait for the process to terminate
+            while (posix_getpgid($pid) !== false) {
+                sleep(1); // Wait for 1 second before checking again
+            }
+
             unlink(BASE_PATH . '/reset.pid'); // Remove PID file
             unlink(BASE_PATH . '/reset.log'); // Optionally remove log file
         }
