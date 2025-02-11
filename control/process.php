@@ -32,19 +32,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Execute the appropriate bash script based on the button clicked
     switch ($action) {
         case 'setup':
-            exec('bash ' . BASE_PATH . '/setup.sh 2>&1', $output, $return_var); // Capture output
+            exec('cd ' . BASE_PATH . ' && bash setup.sh 2>&1', $output, $return_var); // Capture output
             echo implode("\n", $output); // Display output
             break;
         case 'continue':
-            exec('bash ' . BASE_PATH . '/continue.sh 2>&1', $output, $return_var); // Capture output
+            exec('cd ' . BASE_PATH . ' && bash continue.sh 2>&1', $output, $return_var); // Capture output
             echo implode("\n", $output); // Display output
             break;
         case 'reset':
-            exec('bash ' . BASE_PATH . '/reset.sh 2>&1', $output, $return_var); // Capture output
+            exec('cd ' . BASE_PATH . ' && bashreset.sh 2>&1', $output, $return_var); // Capture output
             echo implode("\n", $output); // Display output
             break;
         case 'stop':
-            exec("bash " . BASE_PATH . "/stop.sh 2>&1", $output, $return_var); // Capture output
+            exec("cd " . BASE_PATH . " && bash stop.sh 2>&1", $output, $return_var); // Capture output
             echo implode("\n", $output); // Display output
             break;
     }
