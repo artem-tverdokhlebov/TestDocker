@@ -30,16 +30,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Execute the appropriate bash script based on the button clicked
     switch ($action) {
         case 'setup':
-            exec('bash ' . BASE_PATH . '/setup.sh > /dev/null 2>&1 &'); // Run in detached mode
+            exec('bash ' . BASE_PATH . '/setup.sh'); // Run in detached mode
             break;
         case 'continue':
-            exec('bash ' . BASE_PATH . '/continue.sh > /dev/null 2>&1 &'); // Run in detached mode
+            exec('bash ' . BASE_PATH . '/continue.sh'); // Run in detached mode
             break;
         case 'reset':
-            exec('bash ' . BASE_PATH . '/reset.sh > /dev/null 2>&1 &'); // Run in detached mode
+            exec('bash ' . BASE_PATH . '/reset.sh'); // Run in detached mode
             break;
         case 'stop':
-            exec("bash " . BASE_PATH . "/stop.sh", $output, $return_var); // Execute stop.sh
+            exec("bash " . BASE_PATH . "/stop.sh"); // Execute stop.sh
             break;
         case 'save':
             // Just save the config, no action needed
