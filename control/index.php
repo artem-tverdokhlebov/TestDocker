@@ -26,6 +26,9 @@ foreach ($dockerOutput as $line) {
         $dockerStatus[] = trim($line);
     }
 }
+
+// Determine if any containers are running
+$isRunning = count($dockerStatus) > 1; // More than 1 line indicates running
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +46,8 @@ foreach ($dockerOutput as $line) {
 
     <div class="alert alert-info" role="alert">
         <strong>Current Serial Number:</strong> <?php echo htmlspecialchars($currentSerialNumber); ?><br>
-        <strong>Current macOS Version:</strong> <?php echo htmlspecialchars($currentMacOSVersion); ?>
+        <strong>Current macOS Version:</strong> <?php echo htmlspecialchars($currentMacOSVersion); ?><br>
+        <strong>Docker Status:</strong> <?php echo $isRunning ? 'Running' : 'Stopped'; ?>
     </div>
 
     <h3>Docker Compose Services Status</h3>
