@@ -12,17 +12,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($action === 'stop') {
         if (file_exists(BASE_PATH . '/setup.pid')) {
             $pid = file_get_contents(BASE_PATH . '/setup.pid');
-            exec("kill $pid");
+            posix_kill($pid, SIGINT); // Send SIGINT signal
             unlink(BASE_PATH . '/setup.pid'); // Remove PID file
             unlink(BASE_PATH . '/setup.log'); // Optionally remove log file
         } elseif (file_exists(BASE_PATH . '/continue.pid')) {
             $pid = file_get_contents(BASE_PATH . '/continue.pid');
-            exec("kill $pid");
+            posix_kill($pid, SIGINT); // Send SIGINT signal
             unlink(BASE_PATH . '/continue.pid'); // Remove PID file
             unlink(BASE_PATH . '/continue.log'); // Optionally remove log file
         } elseif (file_exists(BASE_PATH . '/reset.pid')) {
             $pid = file_get_contents(BASE_PATH . '/reset.pid');
-            exec("kill $pid");
+            posix_kill($pid, SIGINT); // Send SIGINT signal
             unlink(BASE_PATH . '/reset.pid'); // Remove PID file
             unlink(BASE_PATH . '/reset.log'); // Optionally remove log file
         }
