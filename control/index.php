@@ -37,16 +37,6 @@ $currentMacOSVersion = file_exists(BASE_PATH . '/data/macos.version') ? trim(fil
         <strong>Current macOS Version:</strong> <?php echo htmlspecialchars($currentMacOSVersion); ?>
     </div>
 
-    <?php if ($runningScript): ?>
-        <div class="alert alert-warning" role="alert">
-            <strong>Warning!</strong> A script is currently running: <?php echo htmlspecialchars($runningScript); ?>
-        </div>
-        <form method="post" action="process.php">
-            <input type="hidden" name="action" value="stop">
-            <button type="submit" class="btn btn-danger">Stop Running Script</button>
-        </form>
-    <?php endif; ?>
-
     <form action="process.php" method="post">
         <div class="form-group">
             <label for="WIREGUARD_PRIVATE_KEY">WIREGUARD_PRIVATE_KEY</label>
