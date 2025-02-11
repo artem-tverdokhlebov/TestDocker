@@ -17,6 +17,15 @@ if (file_exists($envFilePath)) {
 // Read current serial number and macOS version
 $currentSerialNumber = file_exists(BASE_PATH . '/data/macos.sn') ? trim(file_get_contents(BASE_PATH . '/data/macos.sn')) : 'N/A';
 $currentMacOSVersion = file_exists(BASE_PATH . '/data/macos.version') ? trim(file_get_contents(BASE_PATH . '/data/macos.version')) : 'N/A';
+
+// Check Docker container status
+$dockerStatus = [];
+exec("docker-compose -f " . BASE_PATH . "/docker-compose.yml ps", $dockerOutput);
+foreach ($dockerOutput as $line) {
+    if (trim($line) !== '') {
+        $dockerStatus[] = trim($line);
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +45,24 @@ $currentMacOSVersion = file_exists(BASE_PATH . '/data/macos.version') ? trim(fil
         <strong>Current Serial Number:</strong> <?php echo htmlspecialchars($currentSerialNumber); ?><br>
         <strong>Current macOS Version:</strong> <?php echo htmlspecialchars($currentMacOSVersion); ?>
     </div>
+
+    <h3>Docker Compose Services Status</h3>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Service</th>
+                <th>Status</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($dockerStatus as $serviceStatus): ?>
+                <tr>
+                    <td><?php echo htmlspecialchars($serviceStatus); ?></td>
+                    <td><?php echo htmlspecialchars($serviceStatus); ?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
     <form action="process.php" method="post">
         <div class="form-group">
