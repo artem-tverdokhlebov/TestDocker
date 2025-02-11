@@ -13,6 +13,10 @@ if (file_exists($envFilePath)) {
         $envData[trim($key)] = trim($value, " \t\n\r\0\x0B\"'");
     }
 }
+
+// Read current serial number and macOS version
+$currentSerialNumber = file_exists(BASE_PATH . '/data/macos.sn') ? trim(file_get_contents(BASE_PATH . '/data/macos.sn')) : 'N/A';
+$currentMacOSVersion = file_exists(BASE_PATH . '/data/macos.version') ? trim(file_get_contents(BASE_PATH . '/data/macos.version')) : 'N/A';
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +31,11 @@ if (file_exists($envFilePath)) {
 <body>
 <div class="container mt-5">
     <h2>Environment Setup</h2>
+
+    <div class="alert alert-info" role="alert">
+        <strong>Current Serial Number:</strong> <?php echo htmlspecialchars($currentSerialNumber); ?><br>
+        <strong>Current macOS Version:</strong> <?php echo htmlspecialchars($currentMacOSVersion); ?>
+    </div>
 
     <?php if ($runningScript): ?>
         <div class="alert alert-warning" role="alert">
