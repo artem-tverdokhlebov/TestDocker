@@ -50,24 +50,6 @@ $isRunning = count($dockerStatus) > 1; // More than 1 line indicates running
         <strong>Docker Status:</strong> <?php echo $isRunning ? 'Running' : 'Stopped'; ?>
     </div>
 
-    <h3>Docker Compose Services Status</h3>
-    <table class="table table-bordered">
-        <thead>
-            <tr>
-                <th>Service</th>
-                <th>Status</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($dockerStatus as $serviceStatus): ?>
-                <tr>
-                    <td><?php echo htmlspecialchars($serviceStatus); ?></td>
-                    <td><?php echo htmlspecialchars($serviceStatus); ?></td>
-                </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
     <form action="process.php" method="post">
         <div class="form-group">
             <label for="WIREGUARD_PRIVATE_KEY">WIREGUARD_PRIVATE_KEY</label>
