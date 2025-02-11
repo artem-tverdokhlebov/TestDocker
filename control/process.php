@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo implode("\n", $output); // Display output
             break;
         case 'reset':
-            exec('cd ' . BASE_PATH . ' && bashreset.sh 2>&1', $output, $return_var); // Capture output
+            exec('cd ' . BASE_PATH . ' && bash reset.sh 2>&1', $output, $return_var); // Capture output
             echo implode("\n", $output); // Display output
             break;
         case 'stop':
