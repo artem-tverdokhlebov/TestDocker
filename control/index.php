@@ -13,16 +13,6 @@ if (file_exists($envFilePath)) {
         $envData[trim($key)] = trim($value, " \t\n\r\0\x0B\"'");
     }
 }
-
-// Check for running scripts
-$runningScript = null;
-if (file_exists(BASE_PATH . '/setup.pid')) {
-    $runningScript = 'Setup Script';
-} elseif (file_exists(BASE_PATH . '/continue.pid')) {
-    $runningScript = 'Continue Script';
-} elseif (file_exists(BASE_PATH . '/reset.pid')) {
-    $runningScript = 'Reset Script';
-}
 ?>
 
 <!DOCTYPE html>
@@ -95,15 +85,19 @@ if (file_exists(BASE_PATH . '/setup.pid')) {
         <div class="mb-3">
             <button type="submit" name="action" value="setup" class="btn btn-primary">
                 <i class="fas fa-cog"></i> 
-                <?php echo $runningScript === 'Setup Script' ? 'Stopping...' : 'Setup'; ?>
+                Setup
             </button>
             <button type="submit" name="action" value="continue" class="btn btn-secondary">
                 <i class="fas fa-arrow-right"></i> 
-                <?php echo $runningScript === 'Continue Script' ? 'Stopping...' : 'Continue'; ?>
+                Continue
+            </button>
+            <button type="submit" name="action" value="stop" class="btn btn-secondary">
+                <i class="fas fa-arrow-right"></i> 
+                Stop
             </button>
             <button type="submit" name="action" value="reset" class="btn btn-danger">
                 <i class="fas fa-undo"></i> 
-                <?php echo $runningScript === 'Reset Script' ? 'Stopping...' : 'Reset'; ?>
+                Reset
             </button>
         </div>
     </form>
